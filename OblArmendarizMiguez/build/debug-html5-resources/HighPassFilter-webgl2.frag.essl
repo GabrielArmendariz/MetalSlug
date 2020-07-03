@@ -1,0 +1,19 @@
+#version 300 es
+precision mediump float;
+precision highp int;
+
+uniform highp sampler2D tex;
+
+in highp vec2 texCoord;
+out highp vec4 color;
+
+void main()
+{
+    highp vec4 col = texture(tex, texCoord);
+    col -= vec4(1.0);
+    highp vec4 bright4 = ((col * (-6.0)) * col) + vec4(2.0);
+    highp float bright = dot(bright4, vec4(0.3333329856395721435546875, 0.3333329856395721435546875, 0.3333329856395721435546875, 0.0));
+    col += vec4(bright + 0.60000002384185791015625);
+    color = col;
+}
+

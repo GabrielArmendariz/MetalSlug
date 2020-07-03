@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
+<!-- $TexturePacker:SmartUpdate:e37a685c510197a20b6c42d99e6bc4f0:dbfeb0f3ecdcf331411b19bdcf600291:a07f2fc436a4d4d88cda56906e7dab23$ -->
+<TextureAtlas imagePath="Protagonist.png" width="254" height="498">
+    <SubTexture name="ProtagonistDie_0" x="198" y="356" rotated="true" width="52" height="42"/>
+    <SubTexture name="ProtagonistDie_1" x="200" y="313" rotated="true" width="52" height="41"/>
+    <SubTexture name="ProtagonistDie_2" x="47" y="146" rotated="true" width="52" height="38"/>
+    <SubTexture name="ProtagonistDie_3" x="42" y="226" rotated="true" width="52" height="39"/>
+    <SubTexture name="ProtagonistDie_4" x="96" y="228" rotated="true" width="52" height="39"/>
+    <SubTexture name="ProtagonistDie_5" x="150" y="229" rotated="true" width="52" height="39"/>
+    <SubTexture name="ProtagonistDie_6" x="150" y="270" rotated="true" width="52" height="40"/>
+    <SubTexture name="ProtagonistDie_7" x="55" y="34" rotated="true" width="52" height="35"/>
+    <SubTexture name="ProtagonistDie_8" x="189" y="149" rotated="true" width="52" height="38"/>
+    <SubTexture name="ProtagonistDie_9" x="1" y="1" rotated="true" width="52" height="30"/>
+    <SubTexture name="ProtagonistDie_10" x="55" y="1" rotated="true" width="52" height="31"/>
+    <SubTexture name="ProtagonistDie_11" x="155" y="1" rotated="true" width="52" height="33"/>
+    <SubTexture name="ProtagonistDie_12" x="1" y="33" rotated="true" width="52" height="34"/>
+    <SubTexture name="ProtagonistDie_13" x="198" y="73" rotated="true" width="52" height="36"/>
+    <SubTexture name="ProtagonistDie_14" x="96" y="269" rotated="true" width="52" height="40"/>
+    <SubTexture name="ProtagonistDie_15" x="1" y="440" rotated="true" width="52" height="44"/>
+    <SubTexture name="ProtagonistJump_0" x="42" y="267" rotated="true" width="52" height="39"/>
+    <SubTexture name="ProtagonistJump_1" x="42" y="186" rotated="true" width="52" height="38"/>
+    <SubTexture name="ProtagonistJump_2" x="49" y="108" rotated="true" width="52" height="36"/>
+    <SubTexture name="ProtagonistJump_3" x="96" y="188" rotated="true" width="52" height="38"/>
+    <SubTexture name="ProtagonistJump_4" x="193" y="111" rotated="true" width="52" height="36"/>
+    <SubTexture name="ProtagonistJump_5" x="154" y="36" rotated="true" width="52" height="35"/>
+    <SubTexture name="ProtagonistJump_6" x="150" y="189" rotated="true" width="52" height="38"/>
+    <SubTexture name="ProtagonistJump_7" x="1" y="69" rotated="true" width="52" height="35"/>
+    <SubTexture name="ProtagonistJump_8" x="103" y="109" rotated="true" width="43" height="36"/>
+    <SubTexture name="ProtagonistJump_9" x="109" y="35" rotated="true" width="43" height="35"/>
+    <SubTexture name="ProtagonistJump_10" x="1" y="106" rotated="true" width="46" height="36"/>
+    <SubTexture name="ProtagonistJumpShoot_0" x="55" y="441" width="60" height="52"/>
+    <SubTexture name="ProtagonistJumpShoot_1" x="117" y="445" width="60" height="52"/>
+    <SubTexture name="ProtagonistJumpShoot_2" x="179" y="445" width="60" height="52"/>
+    <SubTexture name="ProtagonistJumpShoot_3" x="1" y="392" rotated="true" width="44" height="43"/>
+    <SubTexture name="ProtagonistJumpShoot_4" x="1" y="349" rotated="true" width="45" height="41"/>
+    <SubTexture name="ProtagonistJumpShoot_5" x="204" y="271" rotated="true" width="41" height="40"/>
+    <SubTexture name="ProtagonistJumpShoot_6" x="164" y="400" rotated="true" width="45" height="43"/>
+    <SubTexture name="ProtagonistJumpShoot_7" x="60" y="311" rotated="true" width="43" height="40"/>
+    <SubTexture name="ProtagonistJumpShoot_8" x="105" y="312" rotated="true" width="45" height="40"/>
+    <SubTexture name="ProtagonistJumpShoot_9" x="152" y="312" rotated="true" width="46" height="40"/>
+    <SubTexture name="ProtagonistRun_0" x="204" y="189" rotated="true" width="43" height="39"/>
+    <SubTexture name="ProtagonistRun_1" x="101" y="147" rotated="true" width="44" height="38"/>
+    <SubTexture name="ProtagonistRun_2" x="55" y="71" rotated="true" width="46" height="35"/>
+    <SubTexture name="ProtagonistRun_3" x="208" y="36" rotated="true" width="40" height="35"/>
+    <SubTexture name="ProtagonistRun_4" x="103" y="72" rotated="true" width="46" height="35"/>
+    <SubTexture name="ProtagonistRun_5" x="151" y="73" rotated="true" width="45" height="35"/>
+    <SubTexture name="ProtagonistRun_6" x="109" y="1" rotated="true" width="44" height="32"/>
+    <SubTexture name="ProtagonistRun_7" x="148" y="110" rotated="true" width="43" height="36"/>
+    <SubTexture name="ProtagonistRun_8" x="209" y="1" rotated="true" width="44" height="33"/>
+    <SubTexture name="ProtagonistRun_9" x="1" y="144" rotated="true" width="44" height="36"/>
+    <SubTexture name="ProtagonistRun_10" x="48" y="353" rotated="true" width="45" height="41"/>
+    <SubTexture name="ProtagonistShoot_0" x="108" y="397" width="54" height="42"/>
+    <SubTexture name="ProtagonistShoot_1" x="95" y="354" width="57" height="41"/>
+    <SubTexture name="ProtagonistShoot_2" x="1" y="308" width="57" height="39"/>
+    <SubTexture name="ProtagonistShoot_3" x="204" y="230" width="40" height="39"/>
+    <SubTexture name="ProtagonistShoot_4" x="154" y="354" rotated="true" width="42" height="41"/>
+    <SubTexture name="ProtagonistShoot_5" x="1" y="263" width="39" height="40"/>
+    <SubTexture name="ProtagonistShoot_6" x="1" y="222" width="39" height="39"/>
+    <SubTexture name="ProtagonistShoot_7" x="147" y="148" rotated="true" width="40" height="38"/>
+    <SubTexture name="ProtagonistShoot_8" x="1" y="182" rotated="true" width="39" height="38"/>
+    <SubTexture name="ProtagonistShoot_9" x="47" y="397" width="59" height="41"/>
+</TextureAtlas>

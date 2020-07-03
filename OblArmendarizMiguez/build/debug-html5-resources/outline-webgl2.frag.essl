@@ -1,0 +1,24 @@
+#version 300 es
+precision mediump float;
+precision highp int;
+
+uniform highp sampler2D tex;
+uniform highp vec2 stepSize;
+uniform highp vec3 color;
+
+in highp vec2 texCoord;
+out highp vec4 FragColor;
+
+void main()
+{
+    highp vec4 base = texture(tex, texCoord);
+    highp float alpha1 = texture(tex, texCoord + vec2(0.0, stepSize.y)).w;
+    alpha1 -= texture(tex, texCoord + vec2(0.0, -stepSize.y)).w;
+    alpha1 = abs(alpha1);
+    highp float alpha2 = texture(tex, texCoord + vec2(stepSize.x, 0.0)).w;
+    alpha2 -= texture(tex, texCoord + vec2(-stepSize.x, 0.0)).w;
+    alpha2 = abs(alpha2);
+    highp float alpha = clamp(alpha1 + alpha2, 0.0, 1.0);
+    FragColor = vec4(base.xyz + (color * alpha), base.w + alpha);
+}
+

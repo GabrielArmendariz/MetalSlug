@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
+<!-- $TexturePacker:SmartUpdate:6698b141101ee789f46e73ddf3c6d2e3:3d118c73e7327928717dd95f10928ee7:7b7a42affc701313eddfcded96ee40a5$ -->
+<TextureAtlas imagePath="ProtagonistShotgun.png" width="501" height="209">
+    <SubTexture name="attack_0" x="1" y="73" width="63" height="39"/>
+    <SubTexture name="attack_1" x="66" y="74" width="61" height="39"/>
+    <SubTexture name="attack_2" x="167" y="35" width="61" height="38"/>
+    <SubTexture name="attack_3" x="129" y="75" width="64" height="39"/>
+    <SubTexture name="attack_4" x="195" y="76" width="70" height="39"/>
+    <SubTexture name="attack_5" x="267" y="77" width="40" height="39"/>
+    <SubTexture name="attack_6" x="230" y="36" rotated="true" width="39" height="38"/>
+    <SubTexture name="attack_7" x="309" y="79" width="39" height="39"/>
+    <SubTexture name="grabGun_0" x="179" y="117" width="41" height="40"/>
+    <SubTexture name="grabGun_1" x="346" y="1" rotated="true" width="44" height="36"/>
+    <SubTexture name="grabGun_2" x="250" y="1" rotated="true" width="48" height="33"/>
+    <SubTexture name="grabGun_3" x="100" y="1" rotated="true" width="48" height="32"/>
+    <SubTexture name="grabGun_4" x="1" y="1" rotated="true" width="47" height="31"/>
+    <SubTexture name="grabGun_5" x="150" y="1" rotated="true" width="48" height="32"/>
+    <SubTexture name="grabGun_6" x="50" y="1" rotated="true" width="48" height="31"/>
+    <SubTexture name="grabGun_7" x="200" y="1" rotated="true" width="48" height="32"/>
+    <SubTexture name="grabGun_8" x="300" y="1" rotated="true" width="44" height="34"/>
+    <SubTexture name="grabGun_9" x="350" y="79" width="40" height="39"/>
+    <SubTexture name="grabGun_10" x="392" y="79" rotated="true" width="40" height="39"/>
+    <SubTexture name="jump_0" x="271" y="37" rotated="true" width="46" height="38"/>
+    <SubTexture name="jump_1" x="1" y="114" rotated="true" width="46" height="39"/>
+    <SubTexture name="jump_2" x="440" y="1" rotated="true" width="45" height="36"/>
+    <SubTexture name="jump_3" x="319" y="39" rotated="true" width="42" height="38"/>
+    <SubTexture name="jump_4" x="80" y="35" rotated="true" width="38" height="37"/>
+    <SubTexture name="jump_5" x="41" y="34" width="37" height="37"/>
+    <SubTexture name="jump_6" x="1" y="34" width="38" height="37"/>
+    <SubTexture name="jump_7" x="363" y="39" rotated="true" width="43" height="38"/>
+    <SubTexture name="jump_8" x="120" y="35" rotated="true" width="45" height="37"/>
+    <SubTexture name="jump_9" x="408" y="39" rotated="true" width="46" height="38"/>
+    <SubTexture name="jump_10" x="392" y="1" rotated="true" width="46" height="36"/>
+    <SubTexture name="jumpAttack_0" x="324" y="162" width="62" height="45"/>
+    <SubTexture name="jumpAttack_1" x="136" y="159" width="61" height="44"/>
+    <SubTexture name="jumpAttack_2" x="388" y="162" width="59" height="46"/>
+    <SubTexture name="jumpAttack_3" x="199" y="159" width="61" height="44"/>
+    <SubTexture name="jumpAttack_4" x="262" y="162" width="60" height="44"/>
+    <SubTexture name="jumpAttack_5" x="267" y="120" width="62" height="40"/>
+    <SubTexture name="jumpAttack_6" x="331" y="120" width="61" height="40"/>
+    <SubTexture name="jumpAttack_7" x="434" y="79" width="63" height="39"/>
+    <SubTexture name="run_0" x="222" y="117" width="43" height="40"/>
+    <SubTexture name="run_1" x="1" y="155" width="42" height="41"/>
+    <SubTexture name="run_2" x="49" y="115" rotated="true" width="42" height="39"/>
+    <SubTexture name="run_3" x="93" y="116" rotated="true" width="41" height="39"/>
+    <SubTexture name="run_4" x="91" y="157" width="43" height="42"/>
+    <SubTexture name="run_5" x="394" y="120" rotated="true" width="43" height="40"/>
+    <SubTexture name="run_6" x="456" y="39" width="44" height="38"/>
+    <SubTexture name="run_7" x="136" y="116" rotated="true" width="41" height="39"/>
+    <SubTexture name="run_8" x="439" y="120" width="42" height="40"/>
+    <SubTexture name="run_9" x="45" y="156" width="44" height="41"/>
+</TextureAtlas>

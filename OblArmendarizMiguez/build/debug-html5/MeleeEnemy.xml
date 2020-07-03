@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
+<!-- $TexturePacker:SmartUpdate:2566004a30d8e10e3ed2971b47cafa68:37ac4e85d8c701e25426d322250167b5:3cd2b2afb9c9c9fbf81009d1525b4b29$ -->
+<TextureAtlas imagePath="MeleeEnemy.png" width="371" height="128">
+    <SubTexture name="MeleeEnemyAttack_0" x="48" y="1" rotated="true" width="46" height="47"/>
+    <SubTexture name="MeleeEnemyAttack_1" x="96" y="1" width="43" height="45"/>
+    <SubTexture name="MeleeEnemyAttack_2" x="48" y="50" width="44" height="45"/>
+    <SubTexture name="MeleeEnemyAttack_3" x="94" y="50" width="48" height="41"/>
+    <SubTexture name="MeleeEnemyAttack_4" x="141" y="1" rotated="true" width="41" height="47"/>
+    <SubTexture name="MeleeEnemyAttack_5" x="1" y="1" rotated="true" width="45" height="50"/>
+    <SubTexture name="MeleeEnemyAttack_6" x="1" y="53" rotated="true" width="45" height="50"/>
+    <SubTexture name="MeleeEnemyAttack_7" x="144" y="50" width="42" height="45"/>
+    <SubTexture name="MeleeEnemyAttack_8" x="184" y="1" width="41" height="45"/>
+    <SubTexture name="MeleeEnemyDie_0" x="325" y="1" width="42" height="35"/>
+    <SubTexture name="MeleeEnemyDie_1" x="279" y="40" rotated="true" width="40" height="41"/>
+    <SubTexture name="MeleeEnemyDie_2" x="144" y="97" width="45" height="25"/>
+    <SubTexture name="MeleeEnemyDie_3" x="101" y="93" rotated="true" width="41" height="31"/>
+    <SubTexture name="MeleeEnemyDie_4" x="321" y="40" rotated="true" width="43" height="35"/>
+    <SubTexture name="MeleeEnemyDie_5" x="52" y="97" width="47" height="29"/>
+    <SubTexture name="MeleeEnemyDie_6" x="330" y="77" rotated="true" width="21" height="50"/>
+    <SubTexture name="MeleeEnemyDie_7" x="1" y="105" width="49" height="22"/>
+    <SubTexture name="MeleeEnemyDie_8" x="353" y="77" rotated="true" width="17" height="49"/>
+    <SubTexture name="MeleeEnemyRun_1" x="289" y="83" width="39" height="39"/>
+    <SubTexture name="MeleeEnemyRun_2" x="239" y="40" rotated="true" width="38" height="45"/>
+    <SubTexture name="MeleeEnemyRun_3" x="277" y="1" width="46" height="37"/>
+    <SubTexture name="MeleeEnemyRun_4" x="191" y="87" width="48" height="36"/>
+    <SubTexture name="MeleeEnemyRun_5" x="241" y="87" width="46" height="37"/>
+    <SubTexture name="MeleeEnemyRun_6" x="227" y="1" width="48" height="37"/>
+    <SubTexture name="MeleeEnemyRun_7" x="188" y="48" width="49" height="37"/>
+</TextureAtlas>
