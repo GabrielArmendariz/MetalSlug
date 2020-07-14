@@ -45,6 +45,42 @@
 			"type": "blob"
 		},
 		{
+			"name": "HUDGun",
+			"files": [
+				"HUDGun.png"
+			],
+			"file_sizes": [
+				854
+			],
+			"type": "image",
+			"original_width": 77,
+			"original_height": 58
+		},
+		{
+			"name": "HUDMachineGun",
+			"files": [
+				"HUDMachineGun.png"
+			],
+			"file_sizes": [
+				1162
+			],
+			"type": "image",
+			"original_width": 133,
+			"original_height": 62
+		},
+		{
+			"name": "HUDPortrait",
+			"files": [
+				"HUDPortrait.png"
+			],
+			"file_sizes": [
+				8215
+			],
+			"type": "image",
+			"original_width": 106,
+			"original_height": 124
+		},
+		{
 			"name": "HighPassFilter_frag",
 			"files": [
 				"HighPassFilter.frag.essl",
@@ -81,6 +117,16 @@
 			],
 			"file_sizes": [
 				19203
+			],
+			"type": "blob"
+		},
+		{
+			"name": "Mapa3_tmx",
+			"files": [
+				"Mapa3.tmx"
+			],
+			"file_sizes": [
+				67598
 			],
 			"type": "blob"
 		},
@@ -171,6 +217,28 @@
 				3848
 			],
 			"type": "blob"
+		},
+		{
+			"name": "Tileset",
+			"files": [
+				"Tileset.png"
+			],
+			"file_sizes": [
+				5420
+			],
+			"type": "image",
+			"original_width": 160,
+			"original_height": 96
+		},
+		{
+			"name": "_04B_03__",
+			"files": [
+				"04B_03__.ttf"
+			],
+			"file_sizes": [
+				19492
+			],
+			"type": "font"
 		},
 		{
 			"name": "alpha_vert",
