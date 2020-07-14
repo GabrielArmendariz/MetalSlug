@@ -50,7 +50,7 @@ class GameOver extends State {
     override function update(dt:Float) {
         super.update(dt);
         if(Input.i.isKeyCodePressed(KeyCode.Return)){
-            changeState(new GameState()); 
+            changeState(new GameState("Mapa3_tmx","Tileset",16,0));
         }
 
     }
