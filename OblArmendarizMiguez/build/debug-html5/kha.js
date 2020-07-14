@@ -8826,6 +8826,7 @@ gameObjects_Bullet.prototype = $extend(com_framework_utils_Entity.prototype,{
 var gameObjects_Chest = function(x,y,collisions,layer) {
 	com_framework_utils_Entity.call(this);
 	this.collisions = collisions;
+	this.isOpen = false;
 	this.setupSprite(layer);
 	this.setupCollision(x,y,collisions);
 };
@@ -8833,7 +8834,14 @@ $hxClasses["gameObjects.Chest"] = gameObjects_Chest;
 gameObjects_Chest.__name__ = "gameObjects.Chest";
 gameObjects_Chest.__super__ = com_framework_utils_Entity;
 gameObjects_Chest.prototype = $extend(com_framework_utils_Entity.prototype,{
-	update: function(dt) {
+	open: function(bulletCollisions) {
+		this.display.timeline.playAnimation("open_");
+		this.display.timeline.loop = false;
+		this.collision.removeFromParent();
+		this.collisions.remove(this.collision);
+		return new gameObjects_MachineGun(bulletCollisions);
+	}
+	,update: function(dt) {
 		com_framework_utils_Entity.prototype.update.call(this,dt);
 		this.collision.update(dt);
 	}
@@ -8846,15 +8854,15 @@ gameObjects_Chest.prototype = $extend(com_framework_utils_Entity.prototype,{
 		this.display.set_smooth(false);
 		this.display.timeline.playAnimation("closed");
 		this.display.timeline.frameRate = 0.1;
-		this.display.scaleX = this.display.scaleY = 2;
+		this.display.scaleX = this.display.scaleY = 1;
 		layer.addChild(this.display);
 	}
 	,setupCollision: function(x,y,collisions) {
 		this.collision = new com_collision_platformer_CollisionBox();
 		this.collision.userData = this;
 		this.collision.x = x;
-		var tmp = y - this.display.height();
-		this.collision.y = tmp - 1;
+		var tmp = this.display.height();
+		this.collision.y = y - tmp;
 		this.collision.width = this.display.width();
 		var tmp1 = this.display.height();
 		this.collision.height = tmp1 * this.display.scaleY;
@@ -8916,6 +8924,9 @@ gameObjects_Gun.prototype = $extend(com_framework_utils_Entity.prototype,{
 			this.ammo--;
 		}
 	}
+	,hasAmmo: function() {
+		return this.ammo != 0;
+	}
 	,reload: function() {
 		this.bulletsShot = 0;
 	}
@@ -8949,7 +8960,7 @@ var gameObjects_Marco = function(x,y,layer) {
 	this.shooting = false;
 	this.maxSpeed = 150;
 	com_framework_utils_Entity.call(this);
-	this.setupSprite(layer);
+	this.setupSprite(layer,"Protagonist");
 	this.setupCollisionBox(x,y);
 	this.startupGun();
 };
@@ -8999,6 +9010,11 @@ gameObjects_Marco.prototype = $extend(com_framework_utils_Entity.prototype,{
 			} else {
 				this.shooting = false;
 				this.gun.reload();
+				if(!this.gun.hasAmmo()) {
+					this.equipGun(new gameObjects_Gun(this.gun.bulletsCollisions));
+					this.layer.remove(this.display);
+					this.setupSprite(this.layer,"Protagonist");
+				}
 				this.display.timeline.loop = true;
 			}
 		}
@@ -9054,9 +9070,12 @@ gameObjects_Marco.prototype = $extend(com_framework_utils_Entity.prototype,{
 	,equipGun: function(newGun) {
 		this.gun = newGun;
 		this.addChild(this.gun);
+		this.layer.remove(this.display);
+		this.setupSprite(this.layer,"ProtagonistShotgun");
 	}
-	,setupSprite: function(layer) {
-		this.display = new com_gEngine_display_Sprite("Protagonist");
+	,setupSprite: function(layer,sprite) {
+		this.layer = layer;
+		this.display = new com_gEngine_display_Sprite(sprite);
 		this.display.set_smooth(false);
 		this.display.timeline.playAnimation("run_");
 		this.display.timeline.frameRate = 0.1;
@@ -9198,6 +9217,7 @@ gameObjects_RangedEnemy.prototype = $extend(gameObjects_Enemy.prototype,{
 		if(this.display.timeline.currentAnimation == "attack_" && this.display.timeline.currentFrame == 10) {
 			this.shooting = false;
 			this.bulletsShot = 0;
+			this.gun.reload();
 		}
 		gameObjects_Enemy.prototype.update.call(this,dt);
 	}
@@ -11703,13 +11723,13 @@ var kha__$Assets_ImageList = function() {
 	this.hero = null;
 	this.RangedEnemyDescription = { name : "RangedEnemy", original_height : 640, file_sizes : [36990], original_width : 126, files : ["RangedEnemy.png"], type : "image"};
 	this.RangedEnemy = null;
-	this.ProtagonistShotgunDescription = { name : "ProtagonistShotgun", original_height : 209, file_sizes : [52648], original_width : 501, files : ["ProtagonistShotgun.png"], type : "image"};
+	this.ProtagonistShotgunDescription = { name : "ProtagonistShotgun", original_height : 531, file_sizes : [68350], original_width : 255, files : ["ProtagonistShotgun.png"], type : "image"};
 	this.ProtagonistShotgun = null;
 	this.ProtagonistDescription = { name : "Protagonist", original_height : 495, file_sizes : [56310], original_width : 254, files : ["Protagonist.png"], type : "image"};
 	this.Protagonist = null;
 	this.MeleeEnemyDescription = { name : "MeleeEnemy", original_height : 212, file_sizes : [18772], original_width : 246, files : ["MeleeEnemy.png"], type : "image"};
 	this.MeleeEnemy = null;
-	this.ChestDescription = { name : "Chest", original_height : 50, file_sizes : [909], original_width : 55, files : ["Chest.png"], type : "image"};
+	this.ChestDescription = { name : "Chest", original_height : 252, file_sizes : [1461], original_width : 54, files : ["Chest.png"], type : "image"};
 	this.Chest = null;
 	this.BulletDescription = { name : "Bullet", original_height : 6, file_sizes : [181], original_width : 10, files : ["Bullet.png"], type : "image"};
 	this.Bullet = null;
@@ -11729,14 +11749,14 @@ var kha__$Assets_BlobList = function() {
 	this.RangedEnemy_xml = null;
 	this.Protagonist_xmlDescription = { name : "Protagonist_xml", file_sizes : [5301], files : ["Protagonist.xml"], type : "blob"};
 	this.Protagonist_xml = null;
-	this.ProtagonistShotgun_xmlDescription = { name : "ProtagonistShotgun_xml", file_sizes : [4164], files : ["ProtagonistShotgun.xml"], type : "blob"};
+	this.ProtagonistShotgun_xmlDescription = { name : "ProtagonistShotgun_xml", file_sizes : [5638], files : ["ProtagonistShotgun.xml"], type : "blob"};
 	this.ProtagonistShotgun_xml = null;
 	this.MeleeEnemy_xmlDescription = { name : "MeleeEnemy_xml", file_sizes : [2177], files : ["MeleeEnemy.xml"], type : "blob"};
 	this.MeleeEnemy_xml = null;
 	this.Mapa1_tmxDescription = { name : "Mapa1_tmx", file_sizes : [19203], files : ["Mapa1.tmx"], type : "blob"};
 	this.Mapa1_tmxName = "Mapa1_tmx";
 	this.Mapa1_tmx = null;
-	this.Chest_xmlDescription = { name : "Chest_xml", file_sizes : [809], files : ["Chest.xml"], type : "blob"};
+	this.Chest_xmlDescription = { name : "Chest_xml", file_sizes : [818], files : ["Chest.xml"], type : "blob"};
 	this.Chest_xml = null;
 };
 $hxClasses["kha._Assets.BlobList"] = kha__$Assets_BlobList;
@@ -24154,6 +24174,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		resources.add(new com_loading_basicResources_DataLoader(kha_Assets.blobs.Mapa1_tmxName));
 		var atlas = new com_loading_basicResources_JoinAtlas(2048,2048);
 		atlas.add(new com_loading_basicResources_SparrowLoader("Protagonist","Protagonist_xml"));
+		atlas.add(new com_loading_basicResources_SparrowLoader("ProtagonistShotgun","ProtagonistShotgun_xml"));
 		atlas.add(new com_loading_basicResources_SparrowLoader("RangedEnemy","RangedEnemy_xml"));
 		atlas.add(new com_loading_basicResources_SparrowLoader("MeleeEnemy","MeleeEnemy_xml"));
 		atlas.add(new com_loading_basicResources_SparrowLoader("Chest","Chest_xml"));
@@ -24176,19 +24197,15 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		this.enemyCollisions = new com_collision_platformer_CollisionGroup();
 		this.enemyBullets = new com_collision_platformer_CollisionGroup();
 		this.chestCollisions = new com_collision_platformer_CollisionGroup();
-		this.marco = new gameObjects_Marco(250,(this.worldMap.heightInTiles - 8) * 16,this.simulationLayer);
-		this.addChild(this.marco);
-		var enemy = new gameObjects_RangedEnemy(this.simulationLayer,this.enemyCollisions,this.enemyBullets,500,(this.worldMap.heightInTiles - 8) * 16);
-		this.addChild(enemy);
-		var enemy2 = new gameObjects_MeleeEnemy(this.simulationLayer,this.enemyCollisions,900,(this.worldMap.heightInTiles - 8) * 16);
-		this.addChild(enemy2);
 		var chest = new gameObjects_Chest(1200,(this.worldMap.heightInTiles - 8) * 16,this.chestCollisions,this.simulationLayer);
 		this.addChild(chest);
+		this.marco = new gameObjects_Marco(250,(this.worldMap.heightInTiles - 8) * 16,this.simulationLayer);
+		this.addChild(this.marco);
+		this.spawnEnemies();
 		this.stage.cameras[0].limits(0,0,this.worldMap.widthIntTiles * 16,this.worldMap.heightInTiles * 16);
 		this.stage.cameras[0].scale = 2.1;
 		GlobalGameData.marco = this.marco;
 		GlobalGameData.simulationLayer = this.simulationLayer;
-		this.marco.equipGun(new gameObjects_MachineGun(this.marco.gun.bulletsCollisions));
 		this.createTouchJoystick();
 	}
 	,createTouchJoystick: function() {
@@ -24211,6 +24228,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		com_collision_platformer_CollisionEngine.overlap(this.marco.gun.bulletsCollisions,this.enemyCollisions,$bind(this,this.playerBulletVsEnemy));
 		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.enemyBullets,$bind(this,this.playerVsEnemyBullet));
 		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.enemyCollisions,$bind(this,this.playerVsEnemy));
+		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.chestCollisions,$bind(this,this.playerOpenChest));
 		this.stage.cameras[0].setTarget(this.marco.collision.x,this.marco.collision.y);
 	}
 	,playerBulletVsEnemy: function(bulletCollisions,enemyCollisions) {
@@ -24226,6 +24244,24 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,playerVsEnemy: function(enemyCollision,playerCollisions) {
 		this.marco.takeDamage();
+	}
+	,playerOpenChest: function(chestCollision,playerCollisions) {
+		var chest = chestCollision.userData;
+		var newGun = chest.open(this.marco.gun.bulletsCollisions);
+		this.marco.equipGun(newGun);
+	}
+	,spawnEnemies: function() {
+		var enemy = new gameObjects_RangedEnemy(this.simulationLayer,this.enemyCollisions,this.enemyBullets,500,(this.worldMap.heightInTiles - 8) * 16);
+		this.addChild(enemy);
+		var enemy2 = new gameObjects_MeleeEnemy(this.simulationLayer,this.enemyCollisions,900,(this.worldMap.heightInTiles - 8) * 16);
+		this.addChild(enemy2);
+		var i = 0;
+		var gap = 0;
+		while(i++ < 6) {
+			var newEnemy = new gameObjects_RangedEnemy(this.simulationLayer,this.enemyCollisions,this.enemyBullets,1500 + gap,(this.worldMap.heightInTiles - 8) * 16);
+			gap += 25;
+			this.addChild(newEnemy);
+		}
 	}
 	,draw: function(framebuffer) {
 		com_framework_utils_State.prototype.draw.call(this,framebuffer);

@@ -50,6 +50,7 @@ class RangedEnemy extends Enemy {
 		if(display.timeline.currentAnimation == "attack_" && display.timeline.currentFrame == 10){
 			shooting = false;
 			bulletsShot = 0;
+			gun.reload();
 		}
 		super.update(dt);
 	}

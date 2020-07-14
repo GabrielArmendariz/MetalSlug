@@ -52,6 +52,7 @@ class GameState extends State {
 		resources.add(new DataLoader(Assets.blobs.Mapa1_tmxName));
 		var atlas = new JoinAtlas(2048, 2048);
 		atlas.add(new SparrowLoader("Protagonist", "Protagonist_xml"));
+		atlas.add(new SparrowLoader("ProtagonistShotgun", "ProtagonistShotgun_xml"));
 		atlas.add(new SparrowLoader("RangedEnemy", "RangedEnemy_xml"));
 		atlas.add(new SparrowLoader("MeleeEnemy", "MeleeEnemy_xml"));
 		atlas.add(new SparrowLoader("Chest", "Chest_xml"));
@@ -76,20 +77,15 @@ class GameState extends State {
 		enemyCollisions = new CollisionGroup();
 		enemyBullets = new CollisionGroup();
 		chestCollisions = new CollisionGroup();
-		marco = new Marco(250, (worldMap.heightInTiles - 8) * 16, simulationLayer);
-		addChild(marco);
-		var enemy = new RangedEnemy(simulationLayer, enemyCollisions, enemyBullets, 500, (worldMap.heightInTiles - 8) * 16);
-		addChild(enemy);
-		var enemy2 = new MeleeEnemy(simulationLayer, enemyCollisions, 900, (worldMap.heightInTiles - 8) * 16);
-		addChild(enemy2);
 		var chest = new Chest(1200,((worldMap.heightInTiles - 8) * 16),chestCollisions,simulationLayer);
 		addChild(chest);
+		marco = new Marco(250, (worldMap.heightInTiles - 8) * 16, simulationLayer);
+		addChild(marco);
+		spawnEnemies();		
 		stage.defaultCamera().limits(0, 0, worldMap.widthIntTiles * 16 * 1, worldMap.heightInTiles * 16 * 1);
 		stage.defaultCamera().scale = 2.1;
-
 		GGD.marco=marco;
 		GGD.simulationLayer=simulationLayer;
-		marco.equipGun(new MachineGun(marco.gun.bulletsCollisions));
 		createTouchJoystick();
 	}
 
@@ -114,6 +110,7 @@ class GameState extends State {
 		CollisionEngine.overlap(marco.gun.bulletsCollisions, enemyCollisions, playerBulletVsEnemy);
 		CollisionEngine.overlap(marco.collision, enemyBullets, playerVsEnemyBullet);
 		CollisionEngine.overlap(marco.collision, enemyCollisions, playerVsEnemy);
+		CollisionEngine.overlap(marco.collision, chestCollisions, playerOpenChest);
 		stage.defaultCamera().setTarget(marco.collision.x, marco.collision.y);
 	}
 
@@ -138,6 +135,20 @@ class GameState extends State {
 		var chest:Chest = cast chestCollision.userData;
 		var newGun = chest.open(marco.gun.bulletsCollisions);
 		marco.equipGun(newGun);
+	}
+
+	private function spawnEnemies(){
+		var enemy = new RangedEnemy(simulationLayer, enemyCollisions, enemyBullets, 500, (worldMap.heightInTiles - 8) * 16);
+		addChild(enemy);
+		var enemy2 = new MeleeEnemy(simulationLayer, enemyCollisions, 900, (worldMap.heightInTiles - 8) * 16);
+		addChild(enemy2);
+		var i = 0;
+		var gap = 0;
+		while(i++ < 6){
+			var newEnemy = new RangedEnemy(simulationLayer, enemyCollisions, enemyBullets, 1500+gap, (worldMap.heightInTiles - 8) * 16);
+			gap+= 25;
+			addChild(newEnemy);
+		}
 	}
 
 	#if DEBUGDRAW
