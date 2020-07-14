@@ -7,32 +7,35 @@
   <image source="DesiertoReLoco.jpg" width="2048" height="1024"/>
  </imagelayer>
  <objectgroup id="8" name="GameInfo">
-  <object id="37" x="80.6667" y="736" width="176" height="142">
+  <object id="37" x="80.6667" y="782" width="176" height="96">
    <properties>
     <property name="Text">Arrow keys to move
 A to shoot
 Good luck!</property>
    </properties>
   </object>
-  <object id="38" x="494.667" y="736" width="106.667" height="153.333">
+  <object id="38" x="494.667" y="781" width="106.667" height="108.333">
    <properties>
-    <property name="Text" value="Space bar to jump"/>
+    <property name="Text">Space bar 
+to jump</property>
    </properties>
   </object>
-  <object id="39" x="615.333" y="736" width="67.3333" height="90.6667">
+  <object id="39" x="615.333" y="719.5" width="67.3333" height="107.167">
    <properties>
-    <property name="Text">Running enemies are more durable,
+    <property name="Text">Running enemies 
+are more durable,
 shoot them twice!</property>
    </properties>
   </object>
-  <object id="40" x="920.667" y="759.333" width="100" height="119.333">
+  <object id="40" x="920.667" y="719.833" width="100" height="158.833">
    <properties>
     <property name="Text" value="You can double jump!"/>
    </properties>
   </object>
   <object id="41" x="1201.33" y="768" width="141.333" height="124.667">
    <properties>
-    <property name="Text" value="Chest contains special weapons!"/>
+    <property name="Text">Chest contains 
+special weapons!</property>
    </properties>
   </object>
  </objectgroup>

@@ -60,13 +60,16 @@ class GameState extends State {
 	var complete = false;
 	var nextMapName:String;
 
-	public function new(room:String = null, tileset:String = null, tileSize:Int = null) {
+	public function new(room:String = null, tileset:String = null, tileSize:Int = null, score:Int) {
 		super();
 		if(room != null){
 			map = room;
 			this.tileset = tileset;
 			this.tileSize = tileSize;
-		}
+			this.score = score;
+		}else{
+			this.score = 0;
+		}		
 	}
 
 	override function load(resources:Resources) {
@@ -112,7 +115,6 @@ class GameState extends State {
 		doorCollisions = new CollisionGroup();
 		dialogCollision = new CollisionGroup();
 		initHud();
-		score = 0;
 		worldMap = new Tilemap(map, 1);
 		worldMap.init(function(layerTilemap, tileLayer) {
 			if (!tileLayer.properties.exists("noCollision")) {
@@ -144,7 +146,7 @@ class GameState extends State {
 		scoreDisplay.x=650;
 		scoreDisplay.y=40;
 		hudLayer.addChild(scoreDisplay);
-		scoreDisplay.text="0";
+		scoreDisplay.text=""+score;
 		ammo= new Text(Assets.fonts._04B_03__Name);
 		ammo.x=125;
 		ammo.y=120;
@@ -291,7 +293,7 @@ class GameState extends State {
 	}
 
 	private function nextMap(playerCollision:ICollider, finishCollisions:ICollider) {
-		var nextState = new GameState(nextMapName, "Tileset", 16);
+		var nextState = new GameState(nextMapName, "Tileset", 16,score);
 		changeState(nextState);
 	}
 

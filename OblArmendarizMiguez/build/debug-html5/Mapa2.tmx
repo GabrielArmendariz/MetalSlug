@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="128" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="20">
+<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="128" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="26">
  <tileset firstgid="1" name="GreenTiles" tilewidth="16" tileheight="16" tilecount="60" columns="10">
   <image source="Nueva carpeta/Foreground/Tileset.png" width="160" height="96"/>
  </tileset>
@@ -423,16 +423,46 @@
     <property name="xMin" type="float" value="1310"/>
    </properties>
   </object>
-  <object id="16" x="1759" y="488" width="17" height="15">
+  <object id="16" x="1444.33" y="485.333" width="17" height="15">
    <properties>
     <property name="Type" value="MeleeEnemy"/>
-    <property name="xMax" type="float" value="1560"/>
+    <property name="xMax" type="float" value="1525"/>
     <property name="xMin" type="float" value="1310"/>
    </properties>
   </object>
   <object id="19" x="30.8333" y="438.5" width="17" height="15">
    <properties>
     <property name="Type" value="Protagonist"/>
+   </properties>
+  </object>
+  <object id="20" x="1381.83" y="487.167" width="17" height="15">
+   <properties>
+    <property name="Type" value="RangedEnemy"/>
+   </properties>
+  </object>
+  <object id="21" x="1508.83" y="484.833" width="17" height="15">
+   <properties>
+    <property name="Type" value="RangedEnemy"/>
+   </properties>
+  </object>
+  <object id="22" x="1435" y="487" width="17" height="15">
+   <properties>
+    <property name="Type" value="RangedEnemy"/>
+   </properties>
+  </object>
+  <object id="23" x="1585" y="486" width="17" height="15">
+   <properties>
+    <property name="Type" value="RangedEnemy"/>
+   </properties>
+  </object>
+  <object id="24" x="1652.5" y="486.5" width="17" height="15">
+   <properties>
+    <property name="Type" value="RangedEnemy"/>
+   </properties>
+  </object>
+  <object id="25" x="1741" y="486" width="17" height="15">
+   <properties>
+    <property name="Type" value="RangedEnemy"/>
    </properties>
   </object>
  </objectgroup>
