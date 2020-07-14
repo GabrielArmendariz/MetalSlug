@@ -13,6 +13,7 @@ class Marco extends Entity {
 	public var display:Sprite;
 	public var collision:CollisionBox;
 	public var gun:Gun;
+	var layer:Layer;
 	var maxSpeed = 150;
 	var shooting = false;
 	var shoot = false;
@@ -20,7 +21,7 @@ class Marco extends Entity {
 
 	public function new(x:Float,y:Float,layer:Layer) {
 		super();
-		setupSprite(layer);
+		setupSprite(layer,"Protagonist");
 		setupCollisionBox(x,y);
 		startupGun();
 	}
@@ -30,9 +31,6 @@ class Marco extends Entity {
 			return;
 		}		
 		if(shoot){
-			if(!gun.hasAmmo()){
-				equipGun(new Gun(gun.bulletsCollisions));
-			}
 			gun.shoot(collision.x, collision.y + 7, getOrientation(), 0);
 		}
 		if(collision.x < 0){
@@ -69,6 +67,11 @@ class Marco extends Entity {
 			}else{
 				shooting = false;
 				gun.reload();
+				if(!gun.hasAmmo()){
+					equipGun(new Gun(gun.bulletsCollisions));
+					layer.remove(display);
+					setupSprite(layer, "Protagonist");
+				}
 				display.timeline.loop = true;
 			}
 		}
@@ -132,10 +135,13 @@ class Marco extends Entity {
 	public function equipGun(newGun:Gun){
 		gun = newGun;
 		addChild(gun);
+		layer.remove(display);
+		setupSprite(layer, "ProtagonistShotgun");
 	}
 
-	private function setupSprite(layer:Layer){
-		display = new Sprite("Protagonist");
+	private function setupSprite(layer:Layer, sprite:String){
+		this.layer = layer;
+		display = new Sprite(sprite);
 		display.smooth = false;
 		display.timeline.playAnimation("run_");
 		display.timeline.frameRate=1/10;		

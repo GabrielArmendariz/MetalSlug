@@ -18,11 +18,11 @@
 				"Chest.png"
 			],
 			"file_sizes": [
-				1347
+				1461
 			],
 			"type": "image",
-			"original_width": 330,
-			"original_height": 50
+			"original_width": 54,
+			"original_height": 252
 		},
 		{
 			"name": "Chest_xml",
@@ -30,7 +30,7 @@
 				"Chest.xml"
 			],
 			"file_sizes": [
-				819
+				818
 			],
 			"type": "blob"
 		},
@@ -114,11 +114,11 @@
 				"ProtagonistShotgun.png"
 			],
 			"file_sizes": [
-				52648
+				68350
 			],
 			"type": "image",
-			"original_width": 501,
-			"original_height": 209
+			"original_width": 255,
+			"original_height": 531
 		},
 		{
 			"name": "ProtagonistShotgun_xml",
@@ -126,7 +126,7 @@
 				"ProtagonistShotgun.xml"
 			],
 			"file_sizes": [
-				4164
+				5638
 			],
 			"type": "blob"
 		},

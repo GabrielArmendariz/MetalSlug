@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
-<!-- $TexturePacker:SmartUpdate:898e724a32a6274ccc900812aeb50f23:56e893700358b4690eebfd5ab43d546f:7071438e44b4b63f5aa7d0a6de359fd4$ -->
-<TextureAtlas imagePath="Chest.png" width="330" height="50">
-    <SubTexture name="closed" x="1" y="1" width="53" height="48"/>
-    <SubTexture name="open_0" x="1" y="1" width="53" height="48"/>
-    <SubTexture name="open_1" x="56" y="1" width="53" height="48"/>
-    <SubTexture name="open_2" x="111" y="1" width="53" height="48"/>
-    <SubTexture name="open_3" x="166" y="1" width="53" height="48"/>
-    <SubTexture name="open_4" x="221" y="1" width="53" height="48"/>
-    <SubTexture name="open_5" x="276" y="1" width="53" height="48"/>
+<!-- $TexturePacker:SmartUpdate:08a58a54b8eb10bcc430100a70c32613:b6af16f4d1e1a03e8eb791b58b5f4b16:7071438e44b4b63f5aa7d0a6de359fd4$ -->
+<TextureAtlas imagePath="Chest.png" width="54" height="252">
+    <SubTexture name="closed" x="1" y="1" width="52" height="40"/>
+    <SubTexture name="open_0" x="1" y="1" width="52" height="40"/>
+    <SubTexture name="open_1" x="1" y="43" width="52" height="40"/>
+    <SubTexture name="open_2" x="1" y="85" width="52" height="40"/>
+    <SubTexture name="open_3" x="1" y="127" width="52" height="40"/>
+    <SubTexture name="open_4" x="1" y="169" width="52" height="40"/>
+    <SubTexture name="open_5" x="1" y="211" width="52" height="40"/>
 </TextureAtlas>
