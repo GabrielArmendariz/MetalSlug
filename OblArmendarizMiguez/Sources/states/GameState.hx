@@ -1,5 +1,6 @@
 package states;
 
+import cinematic.Dialog;
 import com.soundLib.SoundManager;
 import com.loading.basicResources.SoundLoader;
 import com.collision.platformer.CollisionBox;
@@ -44,6 +45,9 @@ class GameState extends State {
 	var enemyBullets:CollisionGroup;
 	var chestCollisions:CollisionGroup;
 	var spikesCollisions:CollisionGroup;
+	var finishCollisions:CollisionGroup;
+	var doorCollisions:CollisionGroup;
+	var dialogCollision:CollisionGroup;
 	var portrait:Sprite;
 	var weapon:Sprite;
 	var scoreDisplay:Text;
@@ -82,7 +86,8 @@ class GameState extends State {
 		atlas.add(new ImageLoader("HUDMachineGun"));
 		atlas.add(new TilesheetLoader("marioPNG", 17, 17, 0));
 		atlas.add(new TilesheetLoader("Tileset", 16, 16, 0));
-		atlas.add(new FontLoader(Assets.fonts._04B_03__Name,30));				
+		atlas.add(new FontLoader(Assets.fonts._04B_03__Name,30));
+		atlas.add(new FontLoader("Kenney_Pixel",18));				
 		resources.add(atlas);
 	}
 
@@ -96,6 +101,9 @@ class GameState extends State {
 		enemyBullets = new CollisionGroup();
 		chestCollisions = new CollisionGroup();
 		spikesCollisions = new CollisionGroup();
+		finishCollisions = new CollisionGroup();
+		doorCollisions = new CollisionGroup();
+		dialogCollision = new CollisionGroup();
 		GGD.simulationLayer=simulationLayer;
 		initHud();
 		score = 0;
@@ -182,6 +190,28 @@ class GameState extends State {
 					collision.y = object.y;
 					spikesCollisions.add(collision);
 				}
+				if(object.properties.exists("FinishLine")){
+					var collision = new CollisionBox();
+					collision.width = object.width;
+					collision.height = object.height;
+					collision.x = object.x;
+					collision.y = object.y;
+					finishCollisions.add(collision);
+				}
+				if(object.properties.exists("Door")){
+					var collision = new CollisionBox();
+					collision.width = object.width;
+					collision.height = object.height;
+					collision.x = object.x;
+					collision.y = object.y;
+					doorCollisions.add(collision);
+				}
+				if(object.properties.exists("Text")){
+					var text=object.properties.get("Text");
+					var dialog=new Dialog(text,object.x,object.y,object.width,object.height);
+					dialogCollision.add(dialog.collider);
+					addChild(dialog);
+				}
 			default :
 		}
 	}
@@ -194,7 +224,10 @@ class GameState extends State {
 		CollisionEngine.overlap(marco.collision, enemyBullets, playerVsEnemyBullet);
 		CollisionEngine.overlap(marco.collision, enemyCollisions, playerVsEnemy);
 		CollisionEngine.overlap(marco.collision, spikesCollisions, playerVsEnemy);
-		CollisionEngine.overlap(marco.collision, chestCollisions, playerOpenChest);
+		CollisionEngine.collide(marco.collision, chestCollisions, playerOpenChest);
+		CollisionEngine.overlap(marco.collision, finishCollisions, missionClear);
+		CollisionEngine.overlap(marco.collision, doorCollisions, nextMap);
+		CollisionEngine.overlap(dialogCollision,marco.collision,playerVsDialog);
 		stage.defaultCamera().setTarget(marco.collision.x, marco.collision.y);
 		if(marco.gun.ammo > -1){
 			hudLayer.remove(weapon);
@@ -231,6 +264,20 @@ class GameState extends State {
 
 	private function playerVsEnemy(enemyCollision:ICollider, playerCollisions:ICollider){
 		marco.takeDamage();
+	}
+
+	function playerVsDialog(dialogCollision:ICollider,chivitoCollision:ICollider) {
+		var dialog:Dialog=cast dialogCollision.userData;
+		dialog.showText(simulationLayer);
+	}
+
+	private function missionClear(playerCollision:ICollider, finishCollisions:ICollider) {
+		SoundManager.playMusic("MissionComplete",false);
+		SoundManager.musicVolume(0.1);
+	}
+
+	private function nextMap(playerCollision:ICollider, finishCollisions:ICollider) {
+		
 	}
 
 	private function playerOpenChest(chestCollision:ICollider,playerCollisions:ICollider) {

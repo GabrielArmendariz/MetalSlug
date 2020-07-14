@@ -497,6 +497,163 @@ Xml.prototype = {
 	}
 	,__class__: Xml
 };
+var com_framework_utils_Entity = function() {
+	this.toDelete = [];
+	this.childrenInLimbo = 0;
+	this.limbo = false;
+	this.dead = false;
+	this.children = [];
+	this.parent = null;
+};
+$hxClasses["com.framework.utils.Entity"] = com_framework_utils_Entity;
+com_framework_utils_Entity.__name__ = "com.framework.utils.Entity";
+com_framework_utils_Entity.prototype = {
+	update: function(dt) {
+		var counter = 0;
+		var _g = 0;
+		var _g1 = this.children;
+		while(_g < _g1.length) {
+			var child = _g1[_g];
+			++_g;
+			if(child.limbo) {
+				++counter;
+				continue;
+			}
+			child.update(dt);
+			if(child.isDead()) {
+				if(this.pool) {
+					child.limbo = true;
+					child.limboStart();
+					++this.childrenInLimbo;
+				} else {
+					child.destroy();
+					this.toDelete.push(counter);
+				}
+			}
+			++counter;
+		}
+		var offset = 0;
+		var _g2 = 0;
+		var _g3 = this.toDelete;
+		while(_g2 < _g3.length) {
+			var index = _g3[_g2];
+			++_g2;
+			this.children.splice(index - offset,1);
+			++offset;
+		}
+		this.toDelete.splice(0,this.toDelete.length);
+	}
+	,render: function() {
+		var _g = 0;
+		var _g1 = this.children;
+		while(_g < _g1.length) {
+			var child = _g1[_g];
+			++_g;
+			if(!child.limbo) {
+				child.render();
+			}
+		}
+	}
+	,destroy: function() {
+		var _g = 0;
+		var _g1 = this.children;
+		while(_g < _g1.length) {
+			var child = _g1[_g];
+			++_g;
+			child.destroy();
+		}
+		this.parent = null;
+	}
+	,limboStart: function() {
+		throw new js__$Boot_HaxeError("override this function recycle object");
+	}
+	,recycle: function(type,arg) {
+		if(this.childrenInLimbo > 0) {
+			var _g = 0;
+			var _g1 = this.children;
+			while(_g < _g1.length) {
+				var child = _g1[_g];
+				++_g;
+				if(!child.limbo) {
+					continue;
+				}
+				child.limbo = false;
+				child.dead = false;
+				--this.childrenInLimbo;
+				return child;
+			}
+		}
+		var obj = Type.createInstance(type,arg == null ? [] : arg);
+		this.addChild(obj);
+		return obj;
+	}
+	,die: function() {
+		this.dead = true;
+	}
+	,isDead: function() {
+		return this.dead;
+	}
+	,addChild: function(entity) {
+		this.children.push(entity);
+		entity.parent = this;
+	}
+	,__class__: com_framework_utils_Entity
+};
+var cinematic_Dialog = function(text,x,y,width,height) {
+	this.currentLetter = 0;
+	this.playerInside = false;
+	this.showingText = false;
+	com_framework_utils_Entity.call(this);
+	this.text = text;
+	this.collider = new com_collision_platformer_CollisionBox();
+	this.collider.x = x;
+	this.collider.y = y;
+	this.collider.userData = this;
+	this.collider.width = width;
+	this.collider.height = height;
+	this.displayText = new com_gEngine_display_Text("Kenney_Pixel");
+	this.displayText.set_text(text);
+	this.displayText.x = x;
+	this.displayText.y = y;
+	this.sequence = new com_sequencer_SequenceCode();
+};
+$hxClasses["cinematic.Dialog"] = cinematic_Dialog;
+cinematic_Dialog.__name__ = "cinematic.Dialog";
+cinematic_Dialog.__super__ = com_framework_utils_Entity;
+cinematic_Dialog.prototype = $extend(com_framework_utils_Entity.prototype,{
+	update: function(dt) {
+		com_framework_utils_Entity.prototype.update.call(this,dt);
+		this.sequence.update(dt);
+		if(this.showingText && !this.playerInside) {
+			this.displayText.removeFromParent();
+			this.showingText = false;
+			this.sequence.flush();
+		}
+		this.playerInside = false;
+	}
+	,showText: function(layer) {
+		this.playerInside = true;
+		if(!this.showingText) {
+			this.currentLetter = 0;
+			this.showingText = true;
+			layer.addChild(this.displayText);
+			var _g = 0;
+			var _g1 = this.displayText.mLetters.length;
+			while(_g < _g1) {
+				var i = _g++;
+				this.displayText.getLetter(i).visible = false;
+				this.sequence.addFunction($bind(this,this.showLetter));
+				this.sequence.addWait(0.05);
+			}
+		}
+	}
+	,showLetter: function(dt) {
+		this.displayText.getLetter(this.currentLetter).visible = true;
+		++this.currentLetter;
+		return true;
+	}
+	,__class__: cinematic_Dialog
+});
 var com_TimeManager = function() { };
 $hxClasses["com.TimeManager"] = com_TimeManager;
 com_TimeManager.__name__ = "com.TimeManager";
@@ -1267,108 +1424,6 @@ com_framework_Simulation.prototype = {
 		this.nextState = state;
 	}
 	,__class__: com_framework_Simulation
-};
-var com_framework_utils_Entity = function() {
-	this.toDelete = [];
-	this.childrenInLimbo = 0;
-	this.limbo = false;
-	this.dead = false;
-	this.children = [];
-	this.parent = null;
-};
-$hxClasses["com.framework.utils.Entity"] = com_framework_utils_Entity;
-com_framework_utils_Entity.__name__ = "com.framework.utils.Entity";
-com_framework_utils_Entity.prototype = {
-	update: function(dt) {
-		var counter = 0;
-		var _g = 0;
-		var _g1 = this.children;
-		while(_g < _g1.length) {
-			var child = _g1[_g];
-			++_g;
-			if(child.limbo) {
-				++counter;
-				continue;
-			}
-			child.update(dt);
-			if(child.isDead()) {
-				if(this.pool) {
-					child.limbo = true;
-					child.limboStart();
-					++this.childrenInLimbo;
-				} else {
-					child.destroy();
-					this.toDelete.push(counter);
-				}
-			}
-			++counter;
-		}
-		var offset = 0;
-		var _g2 = 0;
-		var _g3 = this.toDelete;
-		while(_g2 < _g3.length) {
-			var index = _g3[_g2];
-			++_g2;
-			this.children.splice(index - offset,1);
-			++offset;
-		}
-		this.toDelete.splice(0,this.toDelete.length);
-	}
-	,render: function() {
-		var _g = 0;
-		var _g1 = this.children;
-		while(_g < _g1.length) {
-			var child = _g1[_g];
-			++_g;
-			if(!child.limbo) {
-				child.render();
-			}
-		}
-	}
-	,destroy: function() {
-		var _g = 0;
-		var _g1 = this.children;
-		while(_g < _g1.length) {
-			var child = _g1[_g];
-			++_g;
-			child.destroy();
-		}
-		this.parent = null;
-	}
-	,limboStart: function() {
-		throw new js__$Boot_HaxeError("override this function recycle object");
-	}
-	,recycle: function(type,arg) {
-		if(this.childrenInLimbo > 0) {
-			var _g = 0;
-			var _g1 = this.children;
-			while(_g < _g1.length) {
-				var child = _g1[_g];
-				++_g;
-				if(!child.limbo) {
-					continue;
-				}
-				child.limbo = false;
-				child.dead = false;
-				--this.childrenInLimbo;
-				return child;
-			}
-		}
-		var obj = Type.createInstance(type,arg == null ? [] : arg);
-		this.addChild(obj);
-		return obj;
-	}
-	,die: function() {
-		this.dead = true;
-	}
-	,isDead: function() {
-		return this.dead;
-	}
-	,addChild: function(entity) {
-		this.children.push(entity);
-		entity.parent = this;
-	}
-	,__class__: com_framework_utils_Entity
 };
 var com_framework_utils_Input = function() {
 	this.mouseDeltaY = 0;
@@ -4098,6 +4153,11 @@ com_gEngine_display_Layer.prototype = {
 			++counter;
 		}
 	}
+	,removeFromParent: function() {
+		if(this.parent != null) {
+			this.parent.remove(this);
+		}
+	}
 	,set_rotation: function(value) {
 		if(value != this.rotation) {
 			this.rotation = value;
@@ -5247,6 +5307,9 @@ com_gEngine_display_Text.prototype = $extend(com_gEngine_display_Layer.prototype
 			this.mLetters[k].removeFromParent();
 		}
 		return aText;
+	}
+	,getLetter: function(aId) {
+		return this.mLetters[aId];
 	}
 	,set_color: function(color) {
 		var _g = 0;
@@ -8013,6 +8076,77 @@ com_loading_basicResources_SparrowLoader.prototype = $extend(com_loading_basicRe
 	}
 	,__class__: com_loading_basicResources_SparrowLoader
 });
+var com_sequencer_SequenceCode = function() {
+	this.functions = [];
+	this.waitTimes = [];
+	this.doForFunctions = [];
+	this.condition = [];
+	this.instant = [];
+	this.anyFunctions = [];
+};
+$hxClasses["com.sequencer.SequenceCode"] = com_sequencer_SequenceCode;
+com_sequencer_SequenceCode.__name__ = "com.sequencer.SequenceCode";
+com_sequencer_SequenceCode.prototype = {
+	addFunction: function(func,instant) {
+		if(instant == null) {
+			instant = false;
+		}
+		this.functions.push(func);
+		this.instant.push(instant);
+	}
+	,update: function(aDt) {
+		while(true) {
+			com_sequencer_SequenceCode.execute = false;
+			if(this.currentFunction == null && this.functions.length > 0 || this.currentFunction != null && this.currentFunction(aDt)) {
+				this.currentFunction = null;
+				if(this.functions.length > 0) {
+					this.currentFunction = this.functions.shift();
+					com_sequencer_SequenceCode.execute = this.instant.shift();
+				}
+			}
+			if(!com_sequencer_SequenceCode.execute) {
+				break;
+			}
+		}
+	}
+	,addWait: function(time,breakCond) {
+		if(breakCond == null) {
+			this.waitTimes.push(time);
+			this.addFunction($bind(this,this.wait));
+		} else {
+			this.waitTimes.push(time);
+			this.condition.push(breakCond);
+			this.addFunction($bind(this,this.waitBreak));
+		}
+	}
+	,waitBreak: function(aDt) {
+		this.waitTimes[0] -= aDt;
+		if(this.waitTimes[0] <= 0 || this.condition[0](aDt)) {
+			this.waitTimes.shift();
+			this.condition.shift();
+			return true;
+		}
+		return false;
+	}
+	,wait: function(aDt) {
+		this.waitTimes[0] -= aDt;
+		if(this.waitTimes[0] <= 0) {
+			this.waitTimes.shift();
+			return true;
+		}
+		return false;
+	}
+	,flush: function() {
+		this.functions.splice(0,this.functions.length);
+		this.waitTimes.splice(0,this.waitTimes.length);
+		this.doForFunctions.splice(0,this.doForFunctions.length);
+		this.instant.splice(0,this.instant.length);
+		this.condition.splice(0,this.condition.length);
+		this.anyFunctions.splice(0,this.anyFunctions.length);
+		this.currentFunction = null;
+	}
+	,__class__: com_sequencer_SequenceCode
+};
 var com_soundLib_SoundManager = function() { };
 $hxClasses["com.soundLib.SoundManager"] = com_soundLib_SoundManager;
 com_soundLib_SoundManager.__name__ = "com.soundLib.SoundManager";
@@ -12160,7 +12294,7 @@ var kha__$Assets_BlobList = function() {
 	this.Mapa3_tmxDescription = { name : "Mapa3_tmx", file_sizes : [67598], files : ["Mapa3.tmx"], type : "blob"};
 	this.Mapa3_tmxName = "Mapa3_tmx";
 	this.Mapa3_tmx = null;
-	this.Mapa1_tmxDescription = { name : "Mapa1_tmx", file_sizes : [38111], files : ["Mapa1.tmx"], type : "blob"};
+	this.Mapa1_tmxDescription = { name : "Mapa1_tmx", file_sizes : [39321], files : ["Mapa1.tmx"], type : "blob"};
 	this.Mapa1_tmxName = "Mapa1_tmx";
 	this.Mapa1_tmx = null;
 	this.Chest_xmlDescription = { name : "Chest_xml", file_sizes : [818], files : ["Chest.xml"], type : "blob"};
@@ -12180,6 +12314,8 @@ var kha__$Assets_FontList = function() {
 	this._04B_03__Description = { name : "_04B_03__", file_sizes : [19492], files : ["04B_03__.ttf"], type : "font"};
 	this._04B_03__Name = "_04B_03__";
 	this._04B_03__ = null;
+	this.Kenney_PixelDescription = { name : "Kenney_Pixel", file_sizes : [28276], files : ["Kenney Pixel.ttf"], type : "font"};
+	this.Kenney_Pixel = null;
 };
 $hxClasses["kha._Assets.FontList"] = kha__$Assets_FontList;
 kha__$Assets_FontList.__name__ = "kha._Assets.FontList";
@@ -25024,6 +25160,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		atlas.add(new com_loading_basicResources_TilesheetLoader("marioPNG",17,17,0));
 		atlas.add(new com_loading_basicResources_TilesheetLoader("Tileset",16,16,0));
 		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts._04B_03__Name,30));
+		atlas.add(new com_loading_basicResources_FontLoader("Kenney_Pixel",18));
 		resources.add(atlas);
 	}
 	,init: function() {
@@ -25037,6 +25174,9 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		this.enemyBullets = new com_collision_platformer_CollisionGroup();
 		this.chestCollisions = new com_collision_platformer_CollisionGroup();
 		this.spikesCollisions = new com_collision_platformer_CollisionGroup();
+		this.finishCollisions = new com_collision_platformer_CollisionGroup();
+		this.doorCollisions = new com_collision_platformer_CollisionGroup();
+		this.dialogCollision = new com_collision_platformer_CollisionGroup();
 		GlobalGameData.simulationLayer = this.simulationLayer;
 		this.initHud();
 		this.score = 0;
@@ -25121,6 +25261,28 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 				collision.y = object.y;
 				this.spikesCollisions.add(collision);
 			}
+			if(object.properties.exists("FinishLine")) {
+				var collision1 = new com_collision_platformer_CollisionBox();
+				collision1.width = object.width;
+				collision1.height = object.height;
+				collision1.x = object.x;
+				collision1.y = object.y;
+				this.finishCollisions.add(collision1);
+			}
+			if(object.properties.exists("Door")) {
+				var collision2 = new com_collision_platformer_CollisionBox();
+				collision2.width = object.width;
+				collision2.height = object.height;
+				collision2.x = object.x;
+				collision2.y = object.y;
+				this.doorCollisions.add(collision2);
+			}
+			if(object.properties.exists("Text")) {
+				var text = object.properties.getString("Text");
+				var dialog = new cinematic_Dialog(text,object.x,object.y,object.width,object.height);
+				this.dialogCollision.add(dialog.collider);
+				this.addChild(dialog);
+			}
 		}
 	}
 	,update: function(dt) {
@@ -25131,7 +25293,10 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.enemyBullets,$bind(this,this.playerVsEnemyBullet));
 		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.enemyCollisions,$bind(this,this.playerVsEnemy));
 		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.spikesCollisions,$bind(this,this.playerVsEnemy));
-		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.chestCollisions,$bind(this,this.playerOpenChest));
+		com_collision_platformer_CollisionEngine.collide(this.marco.collision,this.chestCollisions,$bind(this,this.playerOpenChest));
+		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.finishCollisions,$bind(this,this.missionClear));
+		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.doorCollisions,$bind(this,this.nextMap));
+		com_collision_platformer_CollisionEngine.overlap(this.dialogCollision,this.marco.collision,$bind(this,this.playerVsDialog));
 		this.stage.cameras[0].setTarget(this.marco.collision.x,this.marco.collision.y);
 		if(this.marco.gun.ammo > -1) {
 			this.hudLayer.remove(this.weapon);
@@ -25165,6 +25330,16 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,playerVsEnemy: function(enemyCollision,playerCollisions) {
 		this.marco.takeDamage();
+	}
+	,playerVsDialog: function(dialogCollision,chivitoCollision) {
+		var dialog = dialogCollision.userData;
+		dialog.showText(this.simulationLayer);
+	}
+	,missionClear: function(playerCollision,finishCollisions) {
+		com_soundLib_SoundManager.playMusic("MissionComplete",false);
+		com_soundLib_SoundManager.musicVolume(0.1);
+	}
+	,nextMap: function(playerCollision,finishCollisions) {
 	}
 	,playerOpenChest: function(chestCollision,playerCollisions) {
 		com_soundLib_SoundManager.playMusic("HeavyMachinegun",false);

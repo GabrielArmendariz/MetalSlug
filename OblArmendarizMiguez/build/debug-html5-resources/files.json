@@ -163,6 +163,16 @@
 			"types": []
 		},
 		{
+			"name": "Kenney_Pixel",
+			"files": [
+				"Kenney Pixel.ttf"
+			],
+			"file_sizes": [
+				28276
+			],
+			"type": "font"
+		},
+		{
 			"name": "MachinegunShot",
 			"files": [
 				"MachinegunShot.ogg"
@@ -178,7 +188,7 @@
 				"Mapa1.tmx"
 			],
 			"file_sizes": [
-				38111
+				39321
 			],
 			"type": "blob"
 		},
