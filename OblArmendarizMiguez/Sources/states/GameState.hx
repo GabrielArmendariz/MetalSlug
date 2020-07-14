@@ -1,5 +1,7 @@
 package states;
 
+import com.soundLib.SoundManager;
+import com.loading.basicResources.SoundLoader;
 import com.collision.platformer.CollisionBox;
 import format.tmx.Data.TmxImageLayer;
 import com.loading.basicResources.FontLoader;
@@ -61,6 +63,13 @@ class GameState extends State {
 		resources.add(new DataLoader(Assets.blobs.Mapa1_tmxName));
 		resources.add(new DataLoader(Assets.blobs.Mapa3_tmxName));
 		//resources.add(new SoundLoader("BGM"));
+		resources.add(new SoundLoader("MarcoScream"));
+		resources.add(new SoundLoader("EnemyScream1"));
+		resources.add(new SoundLoader("EnemyScream2"));
+		resources.add(new SoundLoader("MissionComplete"));
+		resources.add(new SoundLoader("GunShot"));
+		resources.add(new SoundLoader("MachinegunShot"));
+		resources.add(new SoundLoader("HeavyMachinegun"));
 		var atlas = new JoinAtlas(2048, 2048);
 		atlas.add(new SparrowLoader("Protagonist", "Protagonist_xml"));
 		atlas.add(new SparrowLoader("ProtagonistShotgun", "ProtagonistShotgun_xml"));
@@ -225,6 +234,8 @@ class GameState extends State {
 	}
 
 	private function playerOpenChest(chestCollision:ICollider,playerCollisions:ICollider) {
+		SoundManager.playMusic("HeavyMachinegun",false);
+		SoundManager.musicVolume(0.1);
 		var chest:Chest = cast chestCollision.userData;
 		var newGun = chest.open(marco.gun.bulletsCollisions);
 		marco.equipGun(newGun);

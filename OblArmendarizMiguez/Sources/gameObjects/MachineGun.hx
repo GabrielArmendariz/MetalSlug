@@ -1,5 +1,6 @@
 package gameObjects;
 
+import com.soundLib.SoundManager;
 import com.framework.utils.Entity;
 import com.collision.platformer.CollisionGroup;
 
@@ -16,6 +17,8 @@ class MachineGun extends Gun
 
 	override function shoot(aX:Float, aY:Float,dirX:Float,dirY:Float):Void
 	{
+		SoundManager.playMusic("MachinegunShot",false);
+		SoundManager.musicVolume(0.1);
 		while(bulletsShot < maxBulletsPerShot && ammo != 0){
 			var bullet:Bullet=cast recycle(Bullet);
 			bulletsShot++;
