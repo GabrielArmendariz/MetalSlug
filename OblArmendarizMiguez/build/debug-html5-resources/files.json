@@ -255,6 +255,18 @@
 			"type": "sound"
 		},
 		{
+			"name": "MissionFailed",
+			"files": [
+				"MissionFailed.png"
+			],
+			"file_sizes": [
+				70260
+			],
+			"type": "image",
+			"original_width": 580,
+			"original_height": 200
+		},
+		{
 			"name": "Protagonist",
 			"files": [
 				"Protagonist.png"
@@ -991,6 +1003,18 @@
 				}
 			],
 			"types": []
+		},
+		{
+			"name": "missionComplete",
+			"files": [
+				"missionComplete.png"
+			],
+			"file_sizes": [
+				194441
+			],
+			"type": "image",
+			"original_width": 823,
+			"original_height": 330
 		},
 		{
 			"name": "mosaic_frag",

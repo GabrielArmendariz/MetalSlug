@@ -41,8 +41,8 @@ class EndgameScreen extends State {
         var scoreDisplay=new Text(Assets.fonts._04B_03__Name);
         scoreDisplay.text="Your score is "+score;
         scoreDisplay.x=GEngine.virtualWidth/2-scoreDisplay.width()*0.5;
-        scoreDisplay.y=GEngine.virtualHeight/2;
-        scoreDisplay.color=Color.Red;
+        scoreDisplay.y=GEngine.virtualHeight/1.75;
+        scoreDisplay.color=Color.White;
         stage.addChild(scoreDisplay);
     }
 

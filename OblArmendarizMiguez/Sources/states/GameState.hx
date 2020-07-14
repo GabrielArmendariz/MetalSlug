@@ -176,7 +176,7 @@ class GameState extends State {
 			case OTRectangle: 
 				if(object.properties.exists("Type")){
 					switch (object.properties.get("Type")){
-						case "RangedEnemy" : 
+						/*case "RangedEnemy" : 
 							var enemy = new RangedEnemy(simulationLayer, enemyCollisions, enemyBullets, object.x, object.y);
 							addChild(enemy);
 						case "MeleeEnemy" :
@@ -186,7 +186,7 @@ class GameState extends State {
 							addChild(enemy);
 						case "Chest" :
 							var chest = new Chest(object.x,object.y,chestCollisions,simulationLayer);
-							addChild(chest);
+							addChild(chest);*/
 						case "Protagonist" :
 							marco = new Marco(object.x, object.y, simulationLayer);
 							addChild(marco);
@@ -233,7 +233,7 @@ class GameState extends State {
 	override function update(dt:Float) {
 		super.update(dt);	
 		if(marco.display.timeline.currentAnimation == "die_" && marco.display.timeline.isComplete()){
-			changeState(new EndgameScreen(""+score,"gameOver"));
+			changeState(new EndgameScreen(""+score,"MissionFailed"));
 		}
 		CollisionEngine.collide(marco.collision,worldMap.collision);
 		CollisionEngine.collide(enemyCollisions,worldMap.collision);
@@ -292,6 +292,7 @@ class GameState extends State {
 		if(!complete){
 			SoundManager.playFx("MissionComplete").volume = 0.1;
 			complete = true;
+			changeState(new EndgameScreen(""+score,"missionComplete"));
 		}		
 	}
 
