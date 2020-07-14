@@ -1,6 +1,16 @@
 {
 	"files": [
 		{
+			"name": "BGM",
+			"files": [
+				"BGM.ogg"
+			],
+			"file_sizes": [
+				2712750
+			],
+			"type": "sound"
+		},
+		{
 			"name": "Bullet",
 			"files": [
 				"Bullet.png"
@@ -126,7 +136,7 @@
 				"ProtagonistShotgun.xml"
 			],
 			"file_sizes": [
-				5638
+				5622
 			],
 			"type": "blob"
 		},

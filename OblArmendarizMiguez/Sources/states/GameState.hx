@@ -1,5 +1,7 @@
 package states;
 
+import com.soundLib.SoundManager;
+import com.loading.basicResources.SoundLoader;
 import js.html.CacheStorage;
 import gameObjects.Bullet;
 import com.collision.platformer.ICollider;
@@ -50,6 +52,7 @@ class GameState extends State {
         screenHeight = GEngine.i.height;
 		resources.add(new DataLoader("Mapa1_tmx"));
 		resources.add(new DataLoader(Assets.blobs.Mapa1_tmxName));
+		resources.add(new SoundLoader("BGM"));
 		var atlas = new JoinAtlas(2048, 2048);
 		atlas.add(new SparrowLoader("Protagonist", "Protagonist_xml"));
 		atlas.add(new SparrowLoader("ProtagonistShotgun", "ProtagonistShotgun_xml"));
@@ -87,6 +90,8 @@ class GameState extends State {
 		GGD.marco=marco;
 		GGD.simulationLayer=simulationLayer;
 		createTouchJoystick();
+		SoundManager.playMusic("BGM",true);
+		SoundManager.musicVolume(0.1);
 	}
 
 	function createTouchJoystick() {		

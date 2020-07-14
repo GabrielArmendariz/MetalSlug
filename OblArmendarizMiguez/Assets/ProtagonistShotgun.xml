@@ -3,14 +3,14 @@
 <!-- $TexturePacker:SmartUpdate:6f8a04ad2c477a95a88d8e0e79c59a7f:e45c247b94eb9374feabca604c7b8281:c7bba223054ec0721962a3426c6ab8ae$ -->
 <TextureAtlas imagePath="ProtagonistShootgun.png" width="255" height="531">
     <SubTexture name="idle" x="206" y="353" width="43" height="40"/>
-    <SubTexture name="attack_0" x="176" y="230" width="63" height="39"/>
-    <SubTexture name="attack_1" x="134" y="271" width="61" height="39"/>
-    <SubTexture name="attack_2" x="101" y="147" width="61" height="38"/>
-    <SubTexture name="attack_3" x="1" y="308" width="64" height="39"/>
-    <SubTexture name="attack_4" x="132" y="312" width="70" height="39"/>
-    <SubTexture name="attack_5" x="1" y="224" width="40" height="39"/>
-    <SubTexture name="attack_6" x="214" y="109" rotated="true" width="39" height="38"/>
-    <SubTexture name="attack_7" x="93" y="227" width="39" height="39"/>
+    <SubTexture name="shoot_0" x="176" y="230" width="63" height="39"/>
+    <SubTexture name="shoot_1" x="134" y="271" width="61" height="39"/>
+    <SubTexture name="shoot_2" x="101" y="147" width="61" height="38"/>
+    <SubTexture name="shoot_3" x="1" y="308" width="64" height="39"/>
+    <SubTexture name="shoot_4" x="132" y="312" width="70" height="39"/>
+    <SubTexture name="shoot_5" x="1" y="224" width="40" height="39"/>
+    <SubTexture name="shoot_6" x="214" y="109" rotated="true" width="39" height="38"/>
+    <SubTexture name="shoot_7" x="93" y="227" width="39" height="39"/>
     <SubTexture name="grabGun_0" x="99" y="353" width="41" height="40"/>
     <SubTexture name="grabGun_1" x="144" y="70" rotated="true" width="44" height="36"/>
     <SubTexture name="grabGun_2" x="147" y="35" rotated="true" width="48" height="33"/>
@@ -33,14 +33,14 @@
     <SubTexture name="jump_8" x="167" y="109" rotated="true" width="45" height="37"/>
     <SubTexture name="jump_9" x="46" y="186" rotated="true" width="46" height="38"/>
     <SubTexture name="jump_10" x="190" y="71" rotated="true" width="46" height="36"/>
-    <SubTexture name="jumpAttack_0" x="126" y="484" width="62" height="45"/>
-    <SubTexture name="jumpAttack_1" x="187" y="438" width="61" height="44"/>
-    <SubTexture name="jumpAttack_2" x="190" y="484" width="59" height="46"/>
-    <SubTexture name="jumpAttack_3" x="1" y="480" width="61" height="44"/>
-    <SubTexture name="jumpAttack_4" x="64" y="481" width="60" height="44"/>
-    <SubTexture name="jumpAttack_5" x="142" y="353" width="62" height="40"/>
-    <SubTexture name="jumpAttack_6" x="90" y="395" width="61" height="40"/>
-    <SubTexture name="jumpAttack_7" x="67" y="309" width="63" height="39"/>
+    <SubTexture name="jumpShoot_0" x="126" y="484" width="62" height="45"/>
+    <SubTexture name="jumpShoot_1" x="187" y="438" width="61" height="44"/>
+    <SubTexture name="jumpShoot_2" x="190" y="484" width="59" height="46"/>
+    <SubTexture name="jumpShoot_3" x="1" y="480" width="61" height="44"/>
+    <SubTexture name="jumpShoot_4" x="64" y="481" width="60" height="44"/>
+    <SubTexture name="jumpShoot_5" x="142" y="353" width="62" height="40"/>
+    <SubTexture name="jumpShoot_6" x="90" y="395" width="61" height="40"/>
+    <SubTexture name="jumpShoot_7" x="67" y="309" width="63" height="39"/>
     <SubTexture name="die_0" x="89" y="437" rotated="true" width="48" height="42"/>
     <SubTexture name="die_1" x="153" y="395" rotated="true" width="48" height="41"/>
     <SubTexture name="die_2" x="1" y="144" rotated="true" width="48" height="38"/>
