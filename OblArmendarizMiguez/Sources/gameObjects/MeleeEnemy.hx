@@ -16,9 +16,11 @@ import kha.math.FastVector2;
  */
 class MeleeEnemy extends Enemy {
 	static private inline var MAX_SPEED:Float = 225;
-    var life = 2;
+	var life = 2;
+	var maxX:Float;
+	var minX:Float;
 
-	public function new(layer:Layer, collisions:CollisionGroup, x:Float, y:Float) {
+	public function new(layer:Layer, collisions:CollisionGroup, x:Float, y:Float, maxX:Float, minX:Float) {
 		super(layer,collisions,x,y,"MeleeEnemy");
 		display.scaleX = display.scaleY = 1.2;
 		display.timeline.playAnimation("run_");
@@ -26,6 +28,8 @@ class MeleeEnemy extends Enemy {
         collision.velocityX = MAX_SPEED;
         display.scaleX = -1;
 		display.timeline.frameRate = 1 / 10;
+		this.maxX = maxX;
+		this.minX = minX;
 	}
 
 	override public function update(dt:Float):Void {
@@ -37,11 +41,11 @@ class MeleeEnemy extends Enemy {
 		if(Math.abs(vecX) <= 25){
 			attack();
 		}	
-        if(collision.isTouching(Sides.LEFT) || collision.x < 0){
+        if(collision.x == minX || collision.x < 0){
             display.scaleX = -1;
             collision.velocityX = MAX_SPEED;
         }
-        if(collision.isTouching(Sides.RIGHT)){
+        if(collision.x == maxX){
             display.scaleX = 1;
             collision.velocityX = -MAX_SPEED;
         }

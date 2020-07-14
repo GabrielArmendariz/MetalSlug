@@ -6,7 +6,7 @@ import com.collision.platformer.CollisionGroup;
 class Gun extends Entity
 {
 	public var bulletsCollisions:CollisionGroup;
-	private var ammo:Int;
+	public var ammo:Int;
 	private var maxBulletsPerShot:Int;
 	private var bulletsShot:Int;
 
