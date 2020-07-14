@@ -16,23 +16,25 @@ import com.loading.basicResources.ImageLoader;
 import com.loading.Resources;
 import com.framework.utils.State;
 
-class GameOver extends State {
+class EndgameScreen extends State {
     var score:String;
+    var outcomePicture:String;
 
-    public function new(score:String) {
+    public function new(score:String, image:String) {
         super();
         this.score=score;
+        this.outcomePicture = image;
     }
 
     override function load(resources:Resources) {
         var atlas:JoinAtlas=new JoinAtlas(1024,1024);
-        atlas.add(new ImageLoader("gameOver"));
+        atlas.add(new ImageLoader(outcomePicture));
         atlas.add(new FontLoader(Assets.fonts._04B_03__Name,30));
         resources.add(atlas);
     }
 
     override function init() {
-        var image=new Sprite("gameOver");
+        var image=new Sprite(outcomePicture);
         image.x=GEngine.virtualWidth*0.5-image.width()*0.5;
         image.y=100;
         stage.addChild(image);
@@ -50,7 +52,7 @@ class GameOver extends State {
     override function update(dt:Float) {
         super.update(dt);
         if(Input.i.isKeyCodePressed(KeyCode.Return)){
-            changeState(new GameState("Mapa3_tmx","Tileset",16,0));
+            changeState(new GameState("Mapa1_tmx","marioPNG",17,0));
         }
 
     }

@@ -12325,11 +12325,11 @@ var kha__$Assets_BlobList = function() {
 	this.ProtagonistShotgun_xml = null;
 	this.MeleeEnemy_xmlDescription = { name : "MeleeEnemy_xml", file_sizes : [2177], files : ["MeleeEnemy.xml"], type : "blob"};
 	this.MeleeEnemy_xml = null;
-	this.Mapa3_tmxDescription = { name : "Mapa3_tmx", file_sizes : [26508], files : ["Mapa3.tmx"], type : "blob"};
+	this.Mapa3_tmxDescription = { name : "Mapa3_tmx", file_sizes : [27118], files : ["Mapa3.tmx"], type : "blob"};
 	this.Mapa3_tmx = null;
-	this.Mapa2_tmxDescription = { name : "Mapa2_tmx", file_sizes : [90273], files : ["Mapa2.tmx"], type : "blob"};
+	this.Mapa2_tmxDescription = { name : "Mapa2_tmx", file_sizes : [90103], files : ["Mapa2.tmx"], type : "blob"};
 	this.Mapa2_tmx = null;
-	this.Mapa1_tmxDescription = { name : "Mapa1_tmx", file_sizes : [39310], files : ["Mapa1.tmx"], type : "blob"};
+	this.Mapa1_tmxDescription = { name : "Mapa1_tmx", file_sizes : [39140], files : ["Mapa1.tmx"], type : "blob"};
 	this.Mapa1_tmx = null;
 	this.Chest_xmlDescription = { name : "Chest_xml", file_sizes : [818], files : ["Chest.xml"], type : "blob"};
 	this.Chest_xml = null;
@@ -25160,9 +25160,10 @@ kha_netsync_Session.prototype = {
 	}
 	,__class__: kha_netsync_Session
 };
-var states_GameOver = function(score) {
+var states_GameOver = function(score,image) {
 	com_framework_utils_State.call(this);
 	this.score = score;
+	this.outcomePicture = image;
 };
 $hxClasses["states.GameOver"] = states_GameOver;
 states_GameOver.__name__ = "states.GameOver";
@@ -25170,12 +25171,12 @@ states_GameOver.__super__ = com_framework_utils_State;
 states_GameOver.prototype = $extend(com_framework_utils_State.prototype,{
 	load: function(resources) {
 		var atlas = new com_loading_basicResources_JoinAtlas(1024,1024);
-		atlas.add(new com_loading_basicResources_ImageLoader("gameOver"));
+		atlas.add(new com_loading_basicResources_ImageLoader(this.outcomePicture));
 		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts._04B_03__Name,30));
 		resources.add(atlas);
 	}
 	,init: function() {
-		var image = new com_gEngine_display_Sprite("gameOver");
+		var image = new com_gEngine_display_Sprite(this.outcomePicture);
 		image.x = com_gEngine_GEngine.virtualWidth * 0.5 - image.width() * 0.5;
 		image.y = 100;
 		this.stage.addChild(image);
@@ -25189,7 +25190,7 @@ states_GameOver.prototype = $extend(com_framework_utils_State.prototype,{
 	,update: function(dt) {
 		com_framework_utils_State.prototype.update.call(this,dt);
 		if(com_framework_utils_Input.i.isKeyCodePressed(13)) {
-			this.changeState(new states_GameState("Mapa3_tmx","Tileset",16,0));
+			this.changeState(new states_GameState("Mapa1_tmx","marioPNG",17,0));
 		}
 	}
 	,__class__: states_GameOver
@@ -25378,7 +25379,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 			tmp = false;
 		}
 		if(tmp) {
-			this.changeState(new states_GameOver("" + this.score));
+			this.changeState(new states_GameOver("" + this.score,"gameOver"));
 		}
 		com_collision_platformer_CollisionEngine.collide(this.marco.collision,this.worldMap.collision);
 		com_collision_platformer_CollisionEngine.collide(this.enemyCollisions,this.worldMap.collision);

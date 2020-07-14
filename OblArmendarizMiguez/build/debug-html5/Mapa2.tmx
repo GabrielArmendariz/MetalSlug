@@ -489,10 +489,5 @@
     <property name="TileSize" type="int" value="16"/>
    </properties>
   </object>
-  <object id="18" x="1971.29" y="695.959" width="1.33333" height="168">
-   <properties>
-    <property name="FinishLine" value="Music"/>
-   </properties>
-  </object>
  </objectgroup>
 </map>

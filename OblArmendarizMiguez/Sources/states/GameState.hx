@@ -233,7 +233,7 @@ class GameState extends State {
 	override function update(dt:Float) {
 		super.update(dt);	
 		if(marco.display.timeline.currentAnimation == "die_" && marco.display.timeline.isComplete()){
-			changeState(new GameOver(""+score));
+			changeState(new EndgameScreen(""+score,"gameOver"));
 		}
 		CollisionEngine.collide(marco.collision,worldMap.collision);
 		CollisionEngine.collide(enemyCollisions,worldMap.collision);

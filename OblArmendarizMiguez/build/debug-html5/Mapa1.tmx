@@ -175,11 +175,6 @@ special weapons!</property>
     <property name="TileSize" type="int" value="16"/>
    </properties>
   </object>
-  <object id="42" x="1930.33" y="727.667" width="1.33333" height="168">
-   <properties>
-    <property name="FinishLine" value="Music"/>
-   </properties>
-  </object>
  </objectgroup>
  <objectgroup id="7" name="Harmful">
   <object id="34" x="1105" y="911.485" width="99" height="47.5152">
