@@ -13,6 +13,28 @@
 			"original_height": 6
 		},
 		{
+			"name": "Chest",
+			"files": [
+				"Chest.png"
+			],
+			"file_sizes": [
+				909
+			],
+			"type": "image",
+			"original_width": 55,
+			"original_height": 50
+		},
+		{
+			"name": "Chest_xml",
+			"files": [
+				"Chest.xml"
+			],
+			"file_sizes": [
+				809
+			],
+			"type": "blob"
+		},
+		{
 			"name": "HighPassFilter_frag",
 			"files": [
 				"HighPassFilter.frag.essl",
@@ -43,16 +65,26 @@
 			"types": []
 		},
 		{
+			"name": "Mapa1_tmx",
+			"files": [
+				"Mapa1.tmx"
+			],
+			"file_sizes": [
+				19203
+			],
+			"type": "blob"
+		},
+		{
 			"name": "MeleeEnemy",
 			"files": [
 				"MeleeEnemy.png"
 			],
 			"file_sizes": [
-				18567
+				18772
 			],
 			"type": "image",
-			"original_width": 371,
-			"original_height": 128
+			"original_width": 246,
+			"original_height": 212
 		},
 		{
 			"name": "MeleeEnemy_xml",
@@ -60,7 +92,7 @@
 				"MeleeEnemy.xml"
 			],
 			"file_sizes": [
-				2499
+				2177
 			],
 			"type": "blob"
 		},
@@ -94,7 +126,7 @@
 				"ProtagonistShotgun.xml"
 			],
 			"file_sizes": [
-				4180
+				4164
 			],
 			"type": "blob"
 		},
@@ -104,7 +136,7 @@
 				"Protagonist.xml"
 			],
 			"file_sizes": [
-				5950
+				5301
 			],
 			"type": "blob"
 		},
@@ -114,11 +146,11 @@
 				"RangedEnemy.png"
 			],
 			"file_sizes": [
-				41285
+				36990
 			],
 			"type": "image",
 			"original_width": 126,
-			"original_height": 635
+			"original_height": 640
 		},
 		{
 			"name": "RangedEnemy_xml",
@@ -126,7 +158,7 @@
 				"RangedEnemy.xml"
 			],
 			"file_sizes": [
-				4248
+				3848
 			],
 			"type": "blob"
 		},
@@ -501,6 +533,18 @@
 				91504
 			],
 			"type": "font"
+		},
+		{
+			"name": "marioPNG",
+			"files": [
+				"marioPNG.png"
+			],
+			"file_sizes": [
+				62697
+			],
+			"type": "image",
+			"original_width": 500,
+			"original_height": 500
 		},
 		{
 			"name": "meshBones_vert",

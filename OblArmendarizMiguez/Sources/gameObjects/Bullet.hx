@@ -33,6 +33,7 @@ class Bullet extends Entity
 		display.removeFromParent();
 		collision.removeFromParent();
 	}
+
 	override function update(dt:Float) {
 		lifeTime+=dt;
 		if(lifeTime > totalLifeTime){
@@ -44,6 +45,7 @@ class Bullet extends Entity
 		
 		super.update(dt);
 	}
+	
 	public function shoot(x:Float, y:Float,dirX:Float,dirY:Float,bulletsCollision:CollisionGroup):Void
 	{
 		lifeTime = 0;
