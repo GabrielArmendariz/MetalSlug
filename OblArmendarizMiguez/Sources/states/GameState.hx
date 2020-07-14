@@ -1,5 +1,7 @@
 package states;
 
+import com.collision.platformer.CollisionBox;
+import format.tmx.Data.TmxImageLayer;
 import com.loading.basicResources.FontLoader;
 import com.gEngine.display.Text;
 import com.gEngine.display.StaticLayer;
@@ -39,6 +41,7 @@ class GameState extends State {
 	var enemyCollisions:CollisionGroup;
 	var enemyBullets:CollisionGroup;
 	var chestCollisions:CollisionGroup;
+	var spikesCollisions:CollisionGroup;
 	var portrait:Sprite;
 	var weapon:Sprite;
 	var scoreDisplay:Text;
@@ -80,6 +83,13 @@ class GameState extends State {
 		hudLayer = new StaticLayer();
 		stage.addChild(simulationLayer);
 		stage.addChild(hudLayer);		
+		enemyCollisions = new CollisionGroup();
+		enemyBullets = new CollisionGroup();
+		chestCollisions = new CollisionGroup();
+		spikesCollisions = new CollisionGroup();
+		GGD.simulationLayer=simulationLayer;
+		initHud();
+		score = 0;
 		worldMap = new Tilemap("Mapa1_tmx", 1);
 		worldMap.init(function(layerTilemap, tileLayer) {
 			if (!tileLayer.properties.exists("noCollision")) {
@@ -87,21 +97,8 @@ class GameState extends State {
 			}
 			simulationLayer.addChild(layerTilemap.createDisplay(tileLayer, new Sprite("marioPNG")));
 		}, parseMapObjects);
-		enemyCollisions = new CollisionGroup();
-		enemyBullets = new CollisionGroup();
-		chestCollisions = new CollisionGroup();
-		var chest = new Chest(1200,((worldMap.heightInTiles - 8) * 16),chestCollisions,simulationLayer);
-		addChild(chest);
-		marco = new Marco(250, (worldMap.heightInTiles - 8) * 16, simulationLayer);
-		addChild(marco);
-		spawnEnemies();		
 		stage.defaultCamera().limits(0, 0, worldMap.widthIntTiles * 16 * 1, worldMap.heightInTiles * 16 * 1);
 		stage.defaultCamera().scale = 2.1;
-		GGD.marco=marco;
-		GGD.simulationLayer=simulationLayer;
-		createTouchJoystick();
-		initHud();
-		score = 0;
 		//SoundManager.playMusic("BGM",true);
 		//SoundManager.musicVolume(0.1);
 	}
@@ -144,7 +141,41 @@ class GameState extends State {
 		gamepad.notify(marco.onAxisChange, marco.onButtonChange);
 	}	
 
-	function parseMapObjects(layerTilemap:Tilemap, object:TmxObject) {}
+	function parseMapObjects(layerTilemap:Tilemap, object:TmxObject) {
+		switch(object.objectType){
+			case OTRectangle: 
+				if(object.properties.exists("Type")){
+					switch (object.properties.get("Type")){
+						case "RangedEnemy" : 
+							var enemy = new RangedEnemy(simulationLayer, enemyCollisions, enemyBullets, object.x, object.y);
+							addChild(enemy);
+						case "MeleeEnemy" :
+							var maxX = Std.parseFloat(object.properties.get("xMax"));
+							var minX = Std.parseFloat(object.properties.get("xMin"));
+							var enemy = new MeleeEnemy(simulationLayer, enemyCollisions, object.x, object.y,maxX,minX);
+							addChild(enemy);
+						case "Chest" :
+							var chest = new Chest(object.x,object.y,chestCollisions,simulationLayer);
+							addChild(chest);
+						case "Protagonist" :
+							marco = new Marco(object.x, object.y, simulationLayer);
+							addChild(marco);
+							createTouchJoystick();
+							GGD.marco=marco;
+						default : 
+					}
+				}
+				if(object.properties.exists("Harmful")){
+					var collision = new CollisionBox();
+					collision.width = object.width;
+					collision.height = object.height;
+					collision.x = object.x;
+					collision.y = object.y;
+					spikesCollisions.add(collision);
+				}
+			default :
+		}
+	}
 
 	override function update(dt:Float) {
 		super.update(dt);	
@@ -153,6 +184,7 @@ class GameState extends State {
 		CollisionEngine.overlap(marco.gun.bulletsCollisions, enemyCollisions, playerBulletVsEnemy);
 		CollisionEngine.overlap(marco.collision, enemyBullets, playerVsEnemyBullet);
 		CollisionEngine.overlap(marco.collision, enemyCollisions, playerVsEnemy);
+		CollisionEngine.overlap(marco.collision, spikesCollisions, playerVsEnemy);
 		CollisionEngine.overlap(marco.collision, chestCollisions, playerOpenChest);
 		stage.defaultCamera().setTarget(marco.collision.x, marco.collision.y);
 		if(marco.gun.ammo > -1){
@@ -196,20 +228,6 @@ class GameState extends State {
 		var chest:Chest = cast chestCollision.userData;
 		var newGun = chest.open(marco.gun.bulletsCollisions);
 		marco.equipGun(newGun);
-	}
-
-	private function spawnEnemies(){
-		var enemy = new RangedEnemy(simulationLayer, enemyCollisions, enemyBullets, 500, (worldMap.heightInTiles - 8) * 16);
-		addChild(enemy);
-		var enemy2 = new MeleeEnemy(simulationLayer, enemyCollisions, 750, (worldMap.heightInTiles - 8) * 16,977,688);
-		addChild(enemy2);
-		var i = 0;
-		var gap = 0;
-		while(i++ < 6){
-			var newEnemy = new RangedEnemy(simulationLayer, enemyCollisions, enemyBullets, 1500+gap, (worldMap.heightInTiles - 8) * 16);
-			gap+= 25;
-			addChild(newEnemy);
-		}
 	}
 
 	#if DEBUGDRAW

@@ -45,6 +45,18 @@
 			"type": "blob"
 		},
 		{
+			"name": "DesiertoReLoco",
+			"files": [
+				"DesiertoReLoco.jpg"
+			],
+			"file_sizes": [
+				123477
+			],
+			"type": "image",
+			"original_width": 2048,
+			"original_height": 1024
+		},
+		{
 			"name": "HUDGun",
 			"files": [
 				"HUDGun.png"
@@ -116,7 +128,7 @@
 				"Mapa1.tmx"
 			],
 			"file_sizes": [
-				19203
+				38111
 			],
 			"type": "blob"
 		},

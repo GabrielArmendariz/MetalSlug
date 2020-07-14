@@ -8367,6 +8367,13 @@ format_tmx__$Data_ImplTmxProperties.prototype = {
 			this.cache[idx] = null;
 		}
 	}
+	,getString: function(name) {
+		var idx = this.names.indexOf(name);
+		if(idx == -1) {
+			return null;
+		}
+		return this.strings[idx];
+	}
 	,__class__: format_tmx__$Data_ImplTmxProperties
 };
 var format_tmx_TmxObjectTypeTemplate = function(name,color,properties) {
@@ -11989,6 +11996,8 @@ var kha__$Assets_ImageList = function() {
 	this.HUDMachineGun = null;
 	this.HUDGunDescription = { name : "HUDGun", original_height : 58, file_sizes : [854], original_width : 77, files : ["HUDGun.png"], type : "image"};
 	this.HUDGun = null;
+	this.DesiertoReLocoDescription = { name : "DesiertoReLoco", original_height : 1024, file_sizes : [123477], original_width : 2048, files : ["DesiertoReLoco.jpg"], type : "image"};
+	this.DesiertoReLoco = null;
 	this.ChestDescription = { name : "Chest", original_height : 252, file_sizes : [1461], original_width : 54, files : ["Chest.png"], type : "image"};
 	this.Chest = null;
 	this.BulletDescription = { name : "Bullet", original_height : 6, file_sizes : [181], original_width : 10, files : ["Bullet.png"], type : "image"};
@@ -12025,7 +12034,7 @@ var kha__$Assets_BlobList = function() {
 	this.Mapa3_tmxDescription = { name : "Mapa3_tmx", file_sizes : [67598], files : ["Mapa3.tmx"], type : "blob"};
 	this.Mapa3_tmxName = "Mapa3_tmx";
 	this.Mapa3_tmx = null;
-	this.Mapa1_tmxDescription = { name : "Mapa1_tmx", file_sizes : [19203], files : ["Mapa1.tmx"], type : "blob"};
+	this.Mapa1_tmxDescription = { name : "Mapa1_tmx", file_sizes : [38111], files : ["Mapa1.tmx"], type : "blob"};
 	this.Mapa1_tmxName = "Mapa1_tmx";
 	this.Mapa1_tmx = null;
 	this.Chest_xmlDescription = { name : "Chest_xml", file_sizes : [818], files : ["Chest.xml"], type : "blob"};
@@ -24474,6 +24483,13 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		this.hudLayer = new com_gEngine_display_StaticLayer();
 		this.stage.addChild(this.simulationLayer);
 		this.stage.addChild(this.hudLayer);
+		this.enemyCollisions = new com_collision_platformer_CollisionGroup();
+		this.enemyBullets = new com_collision_platformer_CollisionGroup();
+		this.chestCollisions = new com_collision_platformer_CollisionGroup();
+		this.spikesCollisions = new com_collision_platformer_CollisionGroup();
+		GlobalGameData.simulationLayer = this.simulationLayer;
+		this.initHud();
+		this.score = 0;
 		this.worldMap = new com_collision_platformer_Tilemap("Mapa1_tmx",1);
 		this.worldMap.init(function(layerTilemap,tileLayer) {
 			if(!tileLayer.properties.exists("noCollision")) {
@@ -24481,21 +24497,8 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 			}
 			_gthis.simulationLayer.addChild(layerTilemap.createDisplay(tileLayer,new com_gEngine_display_Sprite("marioPNG")));
 		},$bind(this,this.parseMapObjects));
-		this.enemyCollisions = new com_collision_platformer_CollisionGroup();
-		this.enemyBullets = new com_collision_platformer_CollisionGroup();
-		this.chestCollisions = new com_collision_platformer_CollisionGroup();
-		var chest = new gameObjects_Chest(1200,(this.worldMap.heightInTiles - 8) * 16,this.chestCollisions,this.simulationLayer);
-		this.addChild(chest);
-		this.marco = new gameObjects_Marco(250,(this.worldMap.heightInTiles - 8) * 16,this.simulationLayer);
-		this.addChild(this.marco);
-		this.spawnEnemies();
 		this.stage.cameras[0].limits(0,0,this.worldMap.widthIntTiles * 16,this.worldMap.heightInTiles * 16);
 		this.stage.cameras[0].scale = 2.1;
-		GlobalGameData.marco = this.marco;
-		GlobalGameData.simulationLayer = this.simulationLayer;
-		this.createTouchJoystick();
-		this.initHud();
-		this.score = 0;
 	}
 	,initHud: function() {
 		this.portrait = new com_gEngine_display_Sprite("HUDPortrait");
@@ -24534,6 +24537,41 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		gamepad.notify(($_=this.marco,$bind($_,$_.onAxisChange)),($_=this.marco,$bind($_,$_.onButtonChange)));
 	}
 	,parseMapObjects: function(layerTilemap,object) {
+		if(object.objectType._hx_index == 0) {
+			if(object.properties.exists("Type")) {
+				switch(object.properties.getString("Type")) {
+				case "Chest":
+					var chest = new gameObjects_Chest(object.x,object.y,this.chestCollisions,this.simulationLayer);
+					this.addChild(chest);
+					break;
+				case "MeleeEnemy":
+					var maxX = parseFloat(object.properties.getString("xMax"));
+					var minX = parseFloat(object.properties.getString("xMin"));
+					var enemy = new gameObjects_MeleeEnemy(this.simulationLayer,this.enemyCollisions,object.x,object.y,maxX,minX);
+					this.addChild(enemy);
+					break;
+				case "Protagonist":
+					this.marco = new gameObjects_Marco(object.x,object.y,this.simulationLayer);
+					this.addChild(this.marco);
+					this.createTouchJoystick();
+					GlobalGameData.marco = this.marco;
+					break;
+				case "RangedEnemy":
+					var enemy1 = new gameObjects_RangedEnemy(this.simulationLayer,this.enemyCollisions,this.enemyBullets,object.x,object.y);
+					this.addChild(enemy1);
+					break;
+				default:
+				}
+			}
+			if(object.properties.exists("Harmful")) {
+				var collision = new com_collision_platformer_CollisionBox();
+				collision.width = object.width;
+				collision.height = object.height;
+				collision.x = object.x;
+				collision.y = object.y;
+				this.spikesCollisions.add(collision);
+			}
+		}
 	}
 	,update: function(dt) {
 		com_framework_utils_State.prototype.update.call(this,dt);
@@ -24542,6 +24580,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		com_collision_platformer_CollisionEngine.overlap(this.marco.gun.bulletsCollisions,this.enemyCollisions,$bind(this,this.playerBulletVsEnemy));
 		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.enemyBullets,$bind(this,this.playerVsEnemyBullet));
 		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.enemyCollisions,$bind(this,this.playerVsEnemy));
+		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.spikesCollisions,$bind(this,this.playerVsEnemy));
 		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.chestCollisions,$bind(this,this.playerOpenChest));
 		this.stage.cameras[0].setTarget(this.marco.collision.x,this.marco.collision.y);
 		if(this.marco.gun.ammo > -1) {
@@ -24581,19 +24620,6 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		var chest = chestCollision.userData;
 		var newGun = chest.open(this.marco.gun.bulletsCollisions);
 		this.marco.equipGun(newGun);
-	}
-	,spawnEnemies: function() {
-		var enemy = new gameObjects_RangedEnemy(this.simulationLayer,this.enemyCollisions,this.enemyBullets,500,(this.worldMap.heightInTiles - 8) * 16);
-		this.addChild(enemy);
-		var enemy2 = new gameObjects_MeleeEnemy(this.simulationLayer,this.enemyCollisions,750,(this.worldMap.heightInTiles - 8) * 16,977,688);
-		this.addChild(enemy2);
-		var i = 0;
-		var gap = 0;
-		while(i++ < 6) {
-			var newEnemy = new gameObjects_RangedEnemy(this.simulationLayer,this.enemyCollisions,this.enemyBullets,1500 + gap,(this.worldMap.heightInTiles - 8) * 16);
-			gap += 25;
-			this.addChild(newEnemy);
-		}
 	}
 	,draw: function(framebuffer) {
 		com_framework_utils_State.prototype.draw.call(this,framebuffer);
