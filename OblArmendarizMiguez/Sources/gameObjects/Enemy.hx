@@ -1,4 +1,5 @@
 package gameObjects;
+import com.soundLib.SoundManager;
 import com.framework.utils.Random;
 import com.collision.platformer.Sides;
 import com.collision.platformer.CollisionGroup;
@@ -36,6 +37,8 @@ class Enemy extends Entity {
 	}
 
 	public function takeDamage(){
+		SoundManager.playMusic("EnemyScream1",false);
+		SoundManager.musicVolume(0.1);
         display.timeline.playAnimation("die_");
 		display.timeline.loop = false;
 		collisionGroup.remove(collision);		

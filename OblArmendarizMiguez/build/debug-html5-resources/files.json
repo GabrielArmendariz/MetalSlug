@@ -45,6 +45,48 @@
 			"type": "blob"
 		},
 		{
+			"name": "DesiertoReLoco",
+			"files": [
+				"DesiertoReLoco.jpg"
+			],
+			"file_sizes": [
+				123477
+			],
+			"type": "image",
+			"original_width": 2048,
+			"original_height": 1024
+		},
+		{
+			"name": "EnemyScream1",
+			"files": [
+				"EnemyScream1.ogg"
+			],
+			"file_sizes": [
+				8859
+			],
+			"type": "sound"
+		},
+		{
+			"name": "EnemyScream2",
+			"files": [
+				"EnemyScream2.ogg"
+			],
+			"file_sizes": [
+				11825
+			],
+			"type": "sound"
+		},
+		{
+			"name": "GunShot",
+			"files": [
+				"GunShot.ogg"
+			],
+			"file_sizes": [
+				6154
+			],
+			"type": "sound"
+		},
+		{
 			"name": "HUDGun",
 			"files": [
 				"HUDGun.png"
@@ -81,6 +123,16 @@
 			"original_height": 124
 		},
 		{
+			"name": "HeavyMachinegun",
+			"files": [
+				"HeavyMachinegun.ogg"
+			],
+			"file_sizes": [
+				19966
+			],
+			"type": "sound"
+		},
+		{
 			"name": "HighPassFilter_frag",
 			"files": [
 				"HighPassFilter.frag.essl",
@@ -111,12 +163,32 @@
 			"types": []
 		},
 		{
+			"name": "Kenney_Pixel",
+			"files": [
+				"Kenney Pixel.ttf"
+			],
+			"file_sizes": [
+				28276
+			],
+			"type": "font"
+		},
+		{
+			"name": "MachinegunShot",
+			"files": [
+				"MachinegunShot.ogg"
+			],
+			"file_sizes": [
+				5554
+			],
+			"type": "sound"
+		},
+		{
 			"name": "Mapa1_tmx",
 			"files": [
 				"Mapa1.tmx"
 			],
 			"file_sizes": [
-				19203
+				39321
 			],
 			"type": "blob"
 		},
@@ -129,6 +201,16 @@
 				67598
 			],
 			"type": "blob"
+		},
+		{
+			"name": "MarcoScream",
+			"files": [
+				"MarcoScream.ogg"
+			],
+			"file_sizes": [
+				13429
+			],
+			"type": "sound"
 		},
 		{
 			"name": "MeleeEnemy",
@@ -151,6 +233,16 @@
 				2177
 			],
 			"type": "blob"
+		},
+		{
+			"name": "MissionComplete",
+			"files": [
+				"MissionComplete.ogg"
+			],
+			"file_sizes": [
+				82913
+			],
+			"type": "sound"
 		},
 		{
 			"name": "Protagonist",

@@ -1,5 +1,6 @@
 package gameObjects;
 
+import com.soundLib.SoundManager;
 import com.collision.platformer.CollisionGroup;
 import com.collision.platformer.Sides;
 import com.framework.utils.XboxJoystick;
@@ -126,6 +127,8 @@ class Marco extends Entity {
 	}
 
 	public function takeDamage(){
+		SoundManager.playMusic("MarcoScream",false);
+		SoundManager.musicVolume(0.1);
 		display.timeline.playAnimation("die_");
 		display.timeline.loop = false;
 		collision.width = 0;
