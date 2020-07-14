@@ -176,7 +176,7 @@ class GameState extends State {
 			case OTRectangle: 
 				if(object.properties.exists("Type")){
 					switch (object.properties.get("Type")){
-						/*case "RangedEnemy" : 
+						case "RangedEnemy" : 
 							var enemy = new RangedEnemy(simulationLayer, enemyCollisions, enemyBullets, object.x, object.y);
 							addChild(enemy);
 						case "MeleeEnemy" :
@@ -186,7 +186,7 @@ class GameState extends State {
 							addChild(enemy);
 						case "Chest" :
 							var chest = new Chest(object.x,object.y,chestCollisions,simulationLayer);
-							addChild(chest);*/
+							addChild(chest);
 						case "Protagonist" :
 							marco = new Marco(object.x, object.y, simulationLayer);
 							addChild(marco);
