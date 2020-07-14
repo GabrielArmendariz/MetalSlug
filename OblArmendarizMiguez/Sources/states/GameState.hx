@@ -76,20 +76,19 @@ class GameState extends State {
 		enemyCollisions = new CollisionGroup();
 		enemyBullets = new CollisionGroup();
 		chestCollisions = new CollisionGroup();
+		var chest = new Chest(1200,((worldMap.heightInTiles - 8) * 16),chestCollisions,simulationLayer);
+		addChild(chest);
 		marco = new Marco(250, (worldMap.heightInTiles - 8) * 16, simulationLayer);
 		addChild(marco);
 		var enemy = new RangedEnemy(simulationLayer, enemyCollisions, enemyBullets, 500, (worldMap.heightInTiles - 8) * 16);
 		addChild(enemy);
 		var enemy2 = new MeleeEnemy(simulationLayer, enemyCollisions, 900, (worldMap.heightInTiles - 8) * 16);
-		addChild(enemy2);
-		var chest = new Chest(1200,((worldMap.heightInTiles - 8) * 16),chestCollisions,simulationLayer);
-		addChild(chest);
+		addChild(enemy2);		
 		stage.defaultCamera().limits(0, 0, worldMap.widthIntTiles * 16 * 1, worldMap.heightInTiles * 16 * 1);
 		stage.defaultCamera().scale = 2.1;
-
 		GGD.marco=marco;
 		GGD.simulationLayer=simulationLayer;
-		marco.equipGun(new MachineGun(marco.gun.bulletsCollisions));
+		//marco.equipGun(new MachineGun(marco.gun.bulletsCollisions));
 		createTouchJoystick();
 	}
 
@@ -114,6 +113,7 @@ class GameState extends State {
 		CollisionEngine.overlap(marco.gun.bulletsCollisions, enemyCollisions, playerBulletVsEnemy);
 		CollisionEngine.overlap(marco.collision, enemyBullets, playerVsEnemyBullet);
 		CollisionEngine.overlap(marco.collision, enemyCollisions, playerVsEnemy);
+		CollisionEngine.overlap(marco.collision, chestCollisions, playerOpenChest);
 		stage.defaultCamera().setTarget(marco.collision.x, marco.collision.y);
 	}
 

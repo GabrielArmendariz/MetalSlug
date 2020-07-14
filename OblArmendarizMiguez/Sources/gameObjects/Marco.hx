@@ -10,13 +10,13 @@ import com.framework.utils.Entity;
 import kha.math.FastVector2;
 
 class Marco extends Entity {
+	public var display:Sprite;
+	public var collision:CollisionBox;
+	public var gun:Gun;
 	var maxSpeed = 150;
 	var shooting = false;
 	var shoot = false;
 	var jump = 0;
-	public var display:Sprite;
-	public var collision:CollisionBox;
-	public var gun:Gun;
 
 	public function new(x:Float,y:Float,layer:Layer) {
 		super();
@@ -30,6 +30,9 @@ class Marco extends Entity {
 			return;
 		}		
 		if(shoot){
+			if(!gun.hasAmmo()){
+				equipGun(new Gun(gun.bulletsCollisions));
+			}
 			gun.shoot(collision.x, collision.y + 7, getOrientation(), 0);
 		}
 		if(collision.x < 0){

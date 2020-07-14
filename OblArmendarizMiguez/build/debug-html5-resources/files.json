@@ -18,10 +18,10 @@
 				"Chest.png"
 			],
 			"file_sizes": [
-				909
+				1347
 			],
 			"type": "image",
-			"original_width": 55,
+			"original_width": 330,
 			"original_height": 50
 		},
 		{
@@ -30,7 +30,7 @@
 				"Chest.xml"
 			],
 			"file_sizes": [
-				809
+				819
 			],
 			"type": "blob"
 		},

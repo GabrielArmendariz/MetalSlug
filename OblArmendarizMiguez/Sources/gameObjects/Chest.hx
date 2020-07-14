@@ -10,12 +10,14 @@ class Chest extends Entity
 {
     public var collisions:CollisionGroup;
     public var display:Sprite;
-    var collision:CollisionBox;
+	private var collision:CollisionBox;
+	private var isOpen:Bool;
 
 	public function new(x:Float,y:Float,collisions:CollisionGroup, layer:Layer) 
 	{
 		super();
-        this.collisions = collisions;
+		this.collisions = collisions;
+		isOpen = false;
         setupSprite(layer);
         setupCollision(x,y,collisions);
 	}
@@ -24,6 +26,8 @@ class Chest extends Entity
 	{
         display.timeline.playAnimation("open_");
 		display.timeline.loop = false;
+		collision.removeFromParent();
+		collisions.remove(collision);
 		return new MachineGun(bulletCollisions);
     }
 
@@ -42,7 +46,7 @@ class Chest extends Entity
 		display.smooth = false;
 		display.timeline.playAnimation("closed");
 		display.timeline.frameRate=1/10;		
-		display.scaleX = display.scaleY = 2;		
+		display.scaleX = display.scaleY = 1;		
 		layer.addChild(display);
     }
 
@@ -50,7 +54,7 @@ class Chest extends Entity
         collision = new CollisionBox();
 		collision.userData = this;		
 		collision.x = x;
-		collision.y = y -  display.height() - 1;
+		collision.y = y -  display.height();
 		collision.width = display.width();
         collision.height = display.height() * display.scaleY;
 		collisions.add(collision);
