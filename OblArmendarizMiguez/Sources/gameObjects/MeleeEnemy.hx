@@ -41,11 +41,11 @@ class MeleeEnemy extends Enemy {
 		if(Math.abs(vecX) <= 25){
 			attack();
 		}	
-        if(collision.x == minX || collision.x < 0){
+        if(collision.x <= minX || collision.x < 0){
             display.scaleX = -1;
             collision.velocityX = MAX_SPEED;
         }
-        if(collision.x == maxX){
+        if(collision.x >= maxX){
             display.scaleX = 1;
             collision.velocityX = -MAX_SPEED;
         }

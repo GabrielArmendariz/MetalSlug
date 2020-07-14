@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.5" orientation="orthogonal" renderorder="right-down" width="128" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="43">
+<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="128" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="44">
  <tileset firstgid="1" name="marioPNG" tilewidth="16" tileheight="16" spacing="1" tilecount="841" columns="29">
   <image source="marioPNG.png" width="500" height="500"/>
  </tileset>
@@ -7,33 +7,34 @@
   <image source="DesiertoReLoco.jpg" width="2048" height="1024"/>
  </imagelayer>
  <objectgroup id="8" name="GameInfo">
-  <object id="37" x="80.6667" y="797.687" width="159.767" height="96.5466">
+  <object id="37" x="80.6667" y="782" width="176" height="96">
    <properties>
     <property name="Text">Arrow keys to move
 A to shoot
 Good luck!</property>
    </properties>
   </object>
-  <object id="38" x="494.667" y="734.493" width="106.667" height="161.333">
+  <object id="38" x="494.667" y="781" width="106.667" height="108.333">
    <properties>
-    <property name="Text" value="Space bar to jump"/>
+    <property name="Text">Space bar 
+to jump</property>
    </properties>
   </object>
-  <object id="39" x="615.333" y="736" width="67.3333" height="90.6667">
+  <object id="39" x="615.333" y="719.5" width="67.3333" height="107.167">
    <properties>
     <property name="Text">Running enemies 
-are more durable
+are more durable,
 shoot them twice!</property>
    </properties>
   </object>
-  <object id="40" x="920.667" y="710.686" width="100" height="185.836">
+  <object id="40" x="920.667" y="719.833" width="100" height="158.833">
    <properties>
     <property name="Text" value="You can double jump!"/>
    </properties>
   </object>
-  <object id="41" x="1201.33" y="763.613" width="141.333" height="129.054">
+  <object id="41" x="1201.33" y="768" width="141.333" height="124.667">
    <properties>
-    <property name="Text">Chests contain
+    <property name="Text">Chest contains 
 special weapons!</property>
    </properties>
   </object>
@@ -167,16 +168,11 @@ special weapons!</property>
   </object>
  </objectgroup>
  <objectgroup id="5" name="Finish">
-  <object id="5" x="2001" y="593.083" width="2.75" height="302.667">
+  <object id="5" x="2001" y="727.75" width="2.75" height="168">
    <properties>
-    <property name="Door" value="Map2_tmx"/>
-    <property name="x" type="int" value="0"/>
-    <property name="y" type="int" value="0"/>
-   </properties>
-  </object>
-  <object id="42" x="1930.33" y="592.334" width="1.33333" height="303.333">
-   <properties>
-    <property name="FinishLine" value="Music"/>
+    <property name="Door" value="Mapa2_tmx"/>
+    <property name="TileSheet" value="Tileset"/>
+    <property name="TileSize" type="int" value="16"/>
    </properties>
   </object>
  </objectgroup>

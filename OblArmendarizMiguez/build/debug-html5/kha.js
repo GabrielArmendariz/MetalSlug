@@ -1824,6 +1824,9 @@ com_framework_utils_State.prototype = $extend(com_framework_utils_Entity.prototy
 		state.die();
 		state.destroy();
 	}
+	,changeState: function(state) {
+		com_framework_Simulation.i.changeState(state);
+	}
 	,stageColor: function(r,g,b,a) {
 		if(a == null) {
 			a = 1;
@@ -1885,7 +1888,13 @@ var com_framework_utils_VirtualGamepad = function() {
 $hxClasses["com.framework.utils.VirtualGamepad"] = com_framework_utils_VirtualGamepad;
 com_framework_utils_VirtualGamepad.__name__ = "com.framework.utils.VirtualGamepad";
 com_framework_utils_VirtualGamepad.prototype = {
-	addKeyButton: function(id,key) {
+	destroy: function() {
+		kha_input_Surface.get().remove($bind(this,this.onTouchStart),$bind(this,this.onTouchEnd),$bind(this,this.onTouchMove));
+		kha_input_Keyboard.get().remove($bind(this,this.onKeyDown),$bind(this,this.onKeyUp),null);
+		this.onAxisChange = null;
+		this.onButtonChange = null;
+	}
+	,addKeyButton: function(id,key) {
 		this.keyButton.h[key] = id;
 	}
 	,notify: function(onAxis,onButton) {
@@ -5311,6 +5320,22 @@ com_gEngine_display_Text.prototype = $extend(com_gEngine_display_Layer.prototype
 	,getLetter: function(aId) {
 		return this.mLetters[aId];
 	}
+	,width: function() {
+		var min = Infinity;
+		var max = -Infinity;
+		var _g = 0;
+		var _g1 = this.mLetters;
+		while(_g < _g1.length) {
+			var letter = _g1[_g];
+			++_g;
+			if(letter.x < min) {
+				min = letter.x;
+			} else if(letter.x + letter.width() > max) {
+				max = letter.x + letter.width();
+			}
+		}
+		return max - min;
+	}
 	,set_color: function(color) {
 		var _g = 0;
 		var _g1 = this.mLetters;
@@ -8162,6 +8187,20 @@ com_soundLib_SoundManager.addSound = function(soundName,sound) {
 		_this.h[soundName] = sound;
 	}
 };
+com_soundLib_SoundManager.playFx = function(sound,loop) {
+	if(loop == null) {
+		loop = false;
+	}
+	var _this = com_soundLib_SoundManager.map;
+	if(!(__map_reserved[sound] != null ? _this.existsReserved(sound) : _this.h.hasOwnProperty(sound))) {
+		throw new js__$Boot_HaxeError("Sound not found");
+	}
+	if(!com_soundLib_SoundManager.soundMuted) {
+		var _this1 = com_soundLib_SoundManager.map;
+		return kha_audio2_Audio1.play(__map_reserved[sound] != null ? _this1.getReserved(sound) : _this1.h[sound],loop);
+	}
+	return null;
+};
 com_soundLib_SoundManager.playMusic = function(soundName,loop) {
 	if(loop == null) {
 		loop = true;
@@ -9358,8 +9397,7 @@ gameObjects_Enemy.prototype = $extend(com_framework_utils_Entity.prototype,{
 		this.collision.update(dt);
 	}
 	,takeDamage: function() {
-		com_soundLib_SoundManager.playMusic("EnemyScream1",false);
-		com_soundLib_SoundManager.musicVolume(0.1);
+		com_soundLib_SoundManager.playFx("EnemyScream1").set_volume(0.1);
 		this.display.timeline.playAnimation("die_");
 		this.display.timeline.loop = false;
 		this.collisionGroup.remove(this.collision);
@@ -9385,8 +9423,7 @@ gameObjects_Gun.prototype = $extend(com_framework_utils_Entity.prototype,{
 		if(this.bulletsShot < this.maxBulletsPerShot && this.ammo != 0) {
 			var bullet = this.recycle(gameObjects_Bullet);
 			this.bulletsShot++;
-			com_soundLib_SoundManager.playMusic("GunShot",false);
-			com_soundLib_SoundManager.musicVolume(0.1);
+			com_soundLib_SoundManager.playFx("GunShot").set_volume(0.1);
 			bullet.shoot(aX,aY,dirX,dirY,this.bulletsCollisions);
 			this.ammo--;
 		}
@@ -9531,8 +9568,7 @@ gameObjects_Marco.prototype = $extend(com_framework_utils_Entity.prototype,{
 		}
 	}
 	,takeDamage: function() {
-		com_soundLib_SoundManager.playMusic("MarcoScream",false);
-		com_soundLib_SoundManager.musicVolume(0.1);
+		com_soundLib_SoundManager.playFx("MarcoScream").set_volume(0.1);
 		this.display.timeline.playAnimation("die_");
 		this.display.timeline.loop = false;
 		this.collision.width = 0;
@@ -9580,188 +9616,6 @@ gameObjects_Marco.prototype = $extend(com_framework_utils_Entity.prototype,{
 	,onAxisChange: function(id,value) {
 	}
 	,__class__: gameObjects_Marco
-});
-var gameObjects_MeleeEnemy = function(layer,collisions,x,y,maxX,minX) {
-	this.life = 2;
-	gameObjects_Enemy.call(this,layer,collisions,x,y,"MeleeEnemy");
-	this.display.scaleX = this.display.scaleY = 1.2;
-	this.display.timeline.playAnimation("run_");
-	var tmp = this.display.width();
-	this.display.pivotX = tmp * 0.5;
-	this.collision.velocityX = 225;
-	this.display.scaleX = -1;
-	this.display.timeline.frameRate = 0.1;
-	this.maxX = maxX;
-	this.minX = minX;
-};
-$hxClasses["gameObjects.MeleeEnemy"] = gameObjects_MeleeEnemy;
-gameObjects_MeleeEnemy.__name__ = "gameObjects.MeleeEnemy";
-gameObjects_MeleeEnemy.__super__ = gameObjects_Enemy;
-gameObjects_MeleeEnemy.prototype = $extend(gameObjects_Enemy.prototype,{
-	update: function(dt) {
-		if(this.display.timeline.currentAnimation == "die_") {
-			return;
-		}
-		var target = GlobalGameData.marco;
-		var vecX = target.collision.x + target.collision.width - this.collision.x;
-		if(Math.abs(vecX) <= 25) {
-			this.attack();
-		}
-		if(this.collision.x == this.minX || this.collision.x < 0) {
-			this.display.scaleX = -1;
-			this.collision.velocityX = 225;
-		}
-		if(this.collision.x == this.maxX) {
-			this.display.scaleX = 1;
-			this.collision.velocityX = -225.;
-		}
-		gameObjects_Enemy.prototype.update.call(this,dt);
-	}
-	,takeDamage: function() {
-		this.life--;
-		if(this.life == 0) {
-			gameObjects_Enemy.prototype.takeDamage.call(this);
-		}
-	}
-	,render: function() {
-		this.display.x = this.collision.x;
-		this.display.y = this.collision.y;
-		if(this.display.timeline.currentAnimation == "die_") {
-			var _this = this.display.timeline;
-			if(!_this.playing && !_this.loop) {
-				this.display.removeFromParent();
-				this.die();
-			}
-			return;
-		}
-		var tmp;
-		if(this.display.timeline.currentAnimation == "attack_") {
-			var _this1 = this.display.timeline;
-			tmp = !_this1.playing && !_this1.loop;
-		} else {
-			tmp = false;
-		}
-		if(tmp) {
-			this.display.timeline.playAnimation("run_");
-			this.display.timeline.loop = true;
-		}
-		gameObjects_Enemy.prototype.render.call(this);
-	}
-	,attack: function() {
-		this.display.timeline.playAnimation("attack_");
-		this.display.timeline.loop = false;
-	}
-	,__class__: gameObjects_MeleeEnemy
-});
-var gameObjects_RangedEnemy = function(layer,collisions,bulletCollisions,x,y) {
-	this.bulletsShot = 0;
-	this.shooting = false;
-	gameObjects_Enemy.call(this,layer,collisions,x,y,"RangedEnemy");
-	this.collisionGroup = collisions;
-	this.display.scaleX = this.display.scaleY = 1.2;
-	this.display.timeline.playAnimation("idle");
-	var tmp = this.display.width();
-	this.display.pivotX = tmp * 0.7;
-	var tmp1 = this.display.width() / 2;
-	this.collision.x = x + tmp1;
-	var tmp2 = y - this.display.height();
-	this.collision.y = tmp2 - 1;
-	this.collision.width = 29;
-	var tmp3 = this.display.height();
-	this.collision.height = tmp3 * this.display.scaleY;
-	this.gun = new gameObjects_Gun(bulletCollisions);
-	this.addChild(this.gun);
-};
-$hxClasses["gameObjects.RangedEnemy"] = gameObjects_RangedEnemy;
-gameObjects_RangedEnemy.__name__ = "gameObjects.RangedEnemy";
-gameObjects_RangedEnemy.__super__ = gameObjects_Enemy;
-gameObjects_RangedEnemy.prototype = $extend(gameObjects_Enemy.prototype,{
-	update: function(dt) {
-		if(this.display.timeline.currentAnimation == "die") {
-			return;
-		}
-		var target = GlobalGameData.marco;
-		var vecX = target.collision.x - this.collision.x;
-		var vecY = target.collision.y + target.display.height() / 2 - (this.collision.y + this.display.height() * this.display.scaleY / 2);
-		this.shooting = vecX * vecX + vecY * vecY < 40000.;
-		if(this.display.timeline.currentAnimation == "attack_" && this.display.timeline.currentFrame == 8) {
-			this.shoot();
-		}
-		if(this.display.timeline.currentAnimation == "attack_" && this.display.timeline.currentFrame == 10) {
-			this.shooting = false;
-			this.bulletsShot = 0;
-			this.gun.reload();
-		}
-		gameObjects_Enemy.prototype.update.call(this,dt);
-	}
-	,shoot: function() {
-		this.bulletsShot++;
-		if(this.bulletsShot == 1) {
-			var target = GlobalGameData.marco;
-			var vecX = target.collision.x - this.collision.x;
-			var vecY = target.collision.y + target.display.height() / 2 - (this.collision.y + this.display.height() * this.display.scaleY / 2);
-			var x = vecX;
-			var y = vecY;
-			if(vecY == null) {
-				y = 0;
-			}
-			if(vecX == null) {
-				x = 0;
-			}
-			var dir_x = x;
-			var dir_y = y;
-			var x1 = dir_x;
-			var y1 = dir_y;
-			if(y1 == null) {
-				y1 = 0;
-			}
-			if(x1 == null) {
-				x1 = 0;
-			}
-			var v_x = x1;
-			var v_y = y1;
-			var currentLength = Math.sqrt(v_x * v_x + v_y * v_y);
-			if(currentLength != 0) {
-				var mul = 1 / currentLength;
-				v_x *= mul;
-				v_y *= mul;
-			}
-			dir_x = v_x;
-			dir_y = v_y;
-			this.display.scaleX = Math.abs(this.display.scaleX);
-			if(dir_x > 0) {
-				this.display.scaleX = -Math.abs(this.display.scaleX);
-			}
-			this.gun.shoot(this.collision.x,this.collision.y + this.display.height() * this.display.scaleY / 2,dir_x,dir_y);
-		}
-	}
-	,render: function() {
-		var tmp = this.collision.x;
-		var tmp1 = this.display.width() / 2;
-		this.display.x = tmp - tmp1;
-		this.display.y = this.collision.y;
-		if(this.display.timeline.currentAnimation == "die_") {
-			var _this = this.display.timeline;
-			if(!_this.playing && !_this.loop) {
-				this.display.removeFromParent();
-				this.die();
-			}
-			return;
-		}
-		if(this.shooting) {
-			this.display.timeline.playAnimation("attack_");
-			this.display.timeline.loop = false;
-		} else {
-			var _this1 = this.display.timeline;
-			if(!_this1.playing && !_this1.loop) {
-				this.bulletsShot = 0;
-				this.display.timeline.playAnimation("idle");
-				this.display.timeline.loop = true;
-			}
-		}
-		gameObjects_Enemy.prototype.render.call(this);
-	}
-	,__class__: gameObjects_RangedEnemy
 });
 var haxe_IMap = function() { };
 $hxClasses["haxe.IMap"] = haxe_IMap;
@@ -12217,12 +12071,14 @@ js_Boot.__resolveNativeClass = function(name) {
 	return $global[name];
 };
 var kha__$Assets_ImageList = function() {
-	this.tiles2Description = { name : "tiles2", original_height : 416, file_sizes : [1967], original_width : 32, files : ["tiles2.png"], type : "image"};
-	this.tiles2 = null;
+	this.missionCompleteDescription = { name : "missionComplete", original_height : 330, file_sizes : [194441], original_width : 823, files : ["missionComplete.png"], type : "image"};
+	this.missionComplete = null;
 	this.marioPNGDescription = { name : "marioPNG", original_height : 500, file_sizes : [62697], original_width : 500, files : ["marioPNG.png"], type : "image"};
 	this.marioPNG = null;
 	this.heroDescription = { name : "hero", original_height : 180, file_sizes : [16820], original_width : 225, files : ["hero.png"], type : "image"};
 	this.hero = null;
+	this.gameOverDescription = { name : "gameOver", original_height : 244, file_sizes : [17088], original_width : 231, files : ["gameOver.png"], type : "image"};
+	this.gameOver = null;
 	this.TilesetDescription = { name : "Tileset", original_height : 96, file_sizes : [5420], original_width : 160, files : ["Tileset.png"], type : "image"};
 	this.Tileset = null;
 	this.RangedEnemyDescription = { name : "RangedEnemy", original_height : 640, file_sizes : [36990], original_width : 126, files : ["RangedEnemy.png"], type : "image"};
@@ -12231,6 +12087,8 @@ var kha__$Assets_ImageList = function() {
 	this.ProtagonistShotgun = null;
 	this.ProtagonistDescription = { name : "Protagonist", original_height : 495, file_sizes : [56310], original_width : 254, files : ["Protagonist.png"], type : "image"};
 	this.Protagonist = null;
+	this.MissionFailedDescription = { name : "MissionFailed", original_height : 200, file_sizes : [70260], original_width : 580, files : ["MissionFailed.png"], type : "image"};
+	this.MissionFailed = null;
 	this.MeleeEnemyDescription = { name : "MeleeEnemy", original_height : 212, file_sizes : [18772], original_width : 246, files : ["MeleeEnemy.png"], type : "image"};
 	this.MeleeEnemy = null;
 	this.HUDPortraitDescription = { name : "HUDPortrait", original_height : 124, file_sizes : [8215], original_width : 106, files : ["HUDPortrait.png"], type : "image"};
@@ -12281,8 +12139,6 @@ kha__$Assets_SoundList.prototype = {
 	,__class__: kha__$Assets_SoundList
 };
 var kha__$Assets_BlobList = function() {
-	this.testRoom_tmxDescription = { name : "testRoom_tmx", file_sizes : [2994], files : ["testRoom.tmx"], type : "blob"};
-	this.testRoom_tmx = null;
 	this.RangedEnemy_xmlDescription = { name : "RangedEnemy_xml", file_sizes : [3848], files : ["RangedEnemy.xml"], type : "blob"};
 	this.RangedEnemy_xml = null;
 	this.Protagonist_xmlDescription = { name : "Protagonist_xml", file_sizes : [5301], files : ["Protagonist.xml"], type : "blob"};
@@ -12291,11 +12147,11 @@ var kha__$Assets_BlobList = function() {
 	this.ProtagonistShotgun_xml = null;
 	this.MeleeEnemy_xmlDescription = { name : "MeleeEnemy_xml", file_sizes : [2177], files : ["MeleeEnemy.xml"], type : "blob"};
 	this.MeleeEnemy_xml = null;
-	this.Mapa3_tmxDescription = { name : "Mapa3_tmx", file_sizes : [67598], files : ["Mapa3.tmx"], type : "blob"};
-	this.Mapa3_tmxName = "Mapa3_tmx";
+	this.Mapa3_tmxDescription = { name : "Mapa3_tmx", file_sizes : [27118], files : ["Mapa3.tmx"], type : "blob"};
 	this.Mapa3_tmx = null;
-	this.Mapa1_tmxDescription = { name : "Mapa1_tmx", file_sizes : [39321], files : ["Mapa1.tmx"], type : "blob"};
-	this.Mapa1_tmxName = "Mapa1_tmx";
+	this.Mapa2_tmxDescription = { name : "Mapa2_tmx", file_sizes : [90103], files : ["Mapa2.tmx"], type : "blob"};
+	this.Mapa2_tmx = null;
+	this.Mapa1_tmxDescription = { name : "Mapa1_tmx", file_sizes : [39140], files : ["Mapa1.tmx"], type : "blob"};
 	this.Mapa1_tmx = null;
 	this.Chest_xmlDescription = { name : "Chest_xml", file_sizes : [818], files : ["Chest.xml"], type : "blob"};
 	this.Chest_xml = null;
@@ -25126,8 +24982,55 @@ kha_netsync_Session.prototype = {
 	}
 	,__class__: kha_netsync_Session
 };
-var states_GameState = function(room,fromRoom) {
+var states_EndgameScreen = function(score,image) {
 	com_framework_utils_State.call(this);
+	this.score = score;
+	this.outcomePicture = image;
+};
+$hxClasses["states.EndgameScreen"] = states_EndgameScreen;
+states_EndgameScreen.__name__ = "states.EndgameScreen";
+states_EndgameScreen.__super__ = com_framework_utils_State;
+states_EndgameScreen.prototype = $extend(com_framework_utils_State.prototype,{
+	load: function(resources) {
+		var atlas = new com_loading_basicResources_JoinAtlas(1024,1024);
+		atlas.add(new com_loading_basicResources_ImageLoader(this.outcomePicture));
+		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts._04B_03__Name,30));
+		resources.add(atlas);
+	}
+	,init: function() {
+		var image = new com_gEngine_display_Sprite(this.outcomePicture);
+		image.x = com_gEngine_GEngine.virtualWidth * 0.5 - image.width() * 0.5;
+		image.y = 100;
+		this.stage.addChild(image);
+		var scoreDisplay = new com_gEngine_display_Text(kha_Assets.fonts._04B_03__Name);
+		scoreDisplay.set_text("Your score is " + this.score);
+		scoreDisplay.x = com_gEngine_GEngine.virtualWidth / 2 - scoreDisplay.width() * 0.5;
+		scoreDisplay.y = com_gEngine_GEngine.virtualHeight / 1.75;
+		scoreDisplay.set_color(-1);
+		this.stage.addChild(scoreDisplay);
+	}
+	,update: function(dt) {
+		com_framework_utils_State.prototype.update.call(this,dt);
+		if(com_framework_utils_Input.i.isKeyCodePressed(13)) {
+			this.changeState(new states_GameState("Mapa3_tmx","Tileset",16,0));
+		}
+	}
+	,__class__: states_EndgameScreen
+});
+var states_GameState = function(room,tileset,tileSize,score) {
+	this.complete = false;
+	this.tileSize = 17;
+	this.tileset = "marioPNG";
+	this.map = "Mapa1_tmx";
+	com_framework_utils_State.call(this);
+	if(room != null) {
+		this.map = room;
+		this.tileset = tileset;
+		this.tileSize = tileSize;
+		this.score = score;
+	} else {
+		this.score = 0;
+	}
 };
 $hxClasses["states.GameState"] = states_GameState;
 states_GameState.__name__ = "states.GameState";
@@ -25136,10 +25039,8 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	load: function(resources) {
 		this.screenWidth = com_gEngine_GEngine.get_i().width;
 		this.screenHeight = com_gEngine_GEngine.get_i().height;
-		resources.add(new com_loading_basicResources_DataLoader("Mapa1_tmx"));
-		resources.add(new com_loading_basicResources_DataLoader("Mapa3_tmx"));
-		resources.add(new com_loading_basicResources_DataLoader(kha_Assets.blobs.Mapa1_tmxName));
-		resources.add(new com_loading_basicResources_DataLoader(kha_Assets.blobs.Mapa3_tmxName));
+		resources.add(new com_loading_basicResources_DataLoader(this.map));
+		resources.add(new com_loading_basicResources_SoundLoader("BGM",false));
 		resources.add(new com_loading_basicResources_SoundLoader("MarcoScream"));
 		resources.add(new com_loading_basicResources_SoundLoader("EnemyScream1"));
 		resources.add(new com_loading_basicResources_SoundLoader("EnemyScream2"));
@@ -25157,8 +25058,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		atlas.add(new com_loading_basicResources_ImageLoader("HUDPortrait"));
 		atlas.add(new com_loading_basicResources_ImageLoader("HUDGun"));
 		atlas.add(new com_loading_basicResources_ImageLoader("HUDMachineGun"));
-		atlas.add(new com_loading_basicResources_TilesheetLoader("marioPNG",17,17,0));
-		atlas.add(new com_loading_basicResources_TilesheetLoader("Tileset",16,16,0));
+		atlas.add(new com_loading_basicResources_TilesheetLoader(this.tileset,this.tileSize,this.tileSize,0));
 		atlas.add(new com_loading_basicResources_FontLoader(kha_Assets.fonts._04B_03__Name,30));
 		atlas.add(new com_loading_basicResources_FontLoader("Kenney_Pixel",18));
 		resources.add(atlas);
@@ -25167,6 +25067,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		var _gthis = this;
 		this.stageColor(0.5,0.5,0.5);
 		this.simulationLayer = new com_gEngine_display_Layer();
+		GlobalGameData.simulationLayer = this.simulationLayer;
 		this.hudLayer = new com_gEngine_display_StaticLayer();
 		this.stage.addChild(this.simulationLayer);
 		this.stage.addChild(this.hudLayer);
@@ -25177,18 +25078,22 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		this.finishCollisions = new com_collision_platformer_CollisionGroup();
 		this.doorCollisions = new com_collision_platformer_CollisionGroup();
 		this.dialogCollision = new com_collision_platformer_CollisionGroup();
-		GlobalGameData.simulationLayer = this.simulationLayer;
 		this.initHud();
-		this.score = 0;
-		this.worldMap = new com_collision_platformer_Tilemap("Mapa1_tmx",1);
+		this.worldMap = new com_collision_platformer_Tilemap(this.map,1);
 		this.worldMap.init(function(layerTilemap,tileLayer) {
 			if(!tileLayer.properties.exists("noCollision")) {
 				layerTilemap.createCollisions(tileLayer);
 			}
-			_gthis.simulationLayer.addChild(layerTilemap.createDisplay(tileLayer,new com_gEngine_display_Sprite("marioPNG")));
+			_gthis.simulationLayer.addChild(layerTilemap.createDisplay(tileLayer,new com_gEngine_display_Sprite(_gthis.tileset)));
 		},$bind(this,this.parseMapObjects));
 		this.stage.cameras[0].limits(0,0,this.worldMap.widthIntTiles * 16,this.worldMap.heightInTiles * 16);
 		this.stage.cameras[0].scale = 2.1;
+		com_soundLib_SoundManager.playMusic("BGM",true);
+		com_soundLib_SoundManager.musicVolume(0.1);
+	}
+	,destroy: function() {
+		com_framework_utils_State.prototype.destroy.call(this);
+		this.touchJoystick.destroy();
 	}
 	,initHud: function() {
 		this.portrait = new com_gEngine_display_Sprite("HUDPortrait");
@@ -25203,7 +25108,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		this.scoreDisplay.x = 650;
 		this.scoreDisplay.y = 40;
 		this.hudLayer.addChild(this.scoreDisplay);
-		this.scoreDisplay.set_text("0");
+		this.scoreDisplay.set_text("" + this.score);
 		this.ammo = new com_gEngine_display_Text(kha_Assets.fonts._04B_03__Name);
 		this.ammo.x = 125;
 		this.ammo.y = 120;
@@ -25229,28 +25134,11 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	,parseMapObjects: function(layerTilemap,object) {
 		if(object.objectType._hx_index == 0) {
 			if(object.properties.exists("Type")) {
-				switch(object.properties.getString("Type")) {
-				case "Chest":
-					var chest = new gameObjects_Chest(object.x,object.y,this.chestCollisions,this.simulationLayer);
-					this.addChild(chest);
-					break;
-				case "MeleeEnemy":
-					var maxX = parseFloat(object.properties.getString("xMax"));
-					var minX = parseFloat(object.properties.getString("xMin"));
-					var enemy = new gameObjects_MeleeEnemy(this.simulationLayer,this.enemyCollisions,object.x,object.y,maxX,minX);
-					this.addChild(enemy);
-					break;
-				case "Protagonist":
+				if(object.properties.getString("Type") == "Protagonist") {
 					this.marco = new gameObjects_Marco(object.x,object.y,this.simulationLayer);
 					this.addChild(this.marco);
 					this.createTouchJoystick();
 					GlobalGameData.marco = this.marco;
-					break;
-				case "RangedEnemy":
-					var enemy1 = new gameObjects_RangedEnemy(this.simulationLayer,this.enemyCollisions,this.enemyBullets,object.x,object.y);
-					this.addChild(enemy1);
-					break;
-				default:
 				}
 			}
 			if(object.properties.exists("Harmful")) {
@@ -25276,6 +25164,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 				collision2.x = object.x;
 				collision2.y = object.y;
 				this.doorCollisions.add(collision2);
+				this.nextMapName = object.properties.getString("Door");
 			}
 			if(object.properties.exists("Text")) {
 				var text = object.properties.getString("Text");
@@ -25287,6 +25176,16 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	}
 	,update: function(dt) {
 		com_framework_utils_State.prototype.update.call(this,dt);
+		var tmp;
+		if(this.marco.display.timeline.currentAnimation == "die_") {
+			var _this = this.marco.display.timeline;
+			tmp = !_this.playing && !_this.loop;
+		} else {
+			tmp = false;
+		}
+		if(tmp) {
+			this.changeState(new states_EndgameScreen("" + this.score,"MissionFailed"));
+		}
 		com_collision_platformer_CollisionEngine.collide(this.marco.collision,this.worldMap.collision);
 		com_collision_platformer_CollisionEngine.collide(this.enemyCollisions,this.worldMap.collision);
 		com_collision_platformer_CollisionEngine.overlap(this.marco.gun.bulletsCollisions,this.enemyCollisions,$bind(this,this.playerBulletVsEnemy));
@@ -25295,7 +25194,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.spikesCollisions,$bind(this,this.playerVsEnemy));
 		com_collision_platformer_CollisionEngine.collide(this.marco.collision,this.chestCollisions,$bind(this,this.playerOpenChest));
 		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.finishCollisions,$bind(this,this.missionClear));
-		com_collision_platformer_CollisionEngine.overlap(this.marco.collision,this.doorCollisions,$bind(this,this.nextMap));
+		com_collision_platformer_CollisionEngine.collide(this.marco.collision,this.doorCollisions,$bind(this,this.nextMap));
 		com_collision_platformer_CollisionEngine.overlap(this.dialogCollision,this.marco.collision,$bind(this,this.playerVsDialog));
 		this.stage.cameras[0].setTarget(this.marco.collision.x,this.marco.collision.y);
 		if(this.marco.gun.ammo > -1) {
@@ -25336,14 +25235,18 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		dialog.showText(this.simulationLayer);
 	}
 	,missionClear: function(playerCollision,finishCollisions) {
-		com_soundLib_SoundManager.playMusic("MissionComplete",false);
-		com_soundLib_SoundManager.musicVolume(0.1);
+		if(!this.complete) {
+			com_soundLib_SoundManager.playFx("MissionComplete").set_volume(0.1);
+			this.complete = true;
+			this.changeState(new states_EndgameScreen("" + this.score,"missionComplete"));
+		}
 	}
 	,nextMap: function(playerCollision,finishCollisions) {
+		var nextState = new states_GameState(this.nextMapName,"Tileset",16,this.score);
+		this.changeState(nextState);
 	}
 	,playerOpenChest: function(chestCollision,playerCollisions) {
-		com_soundLib_SoundManager.playMusic("HeavyMachinegun",false);
-		com_soundLib_SoundManager.musicVolume(0.1);
+		com_soundLib_SoundManager.playFx("HeavyMachinegun").set_volume(0.1);
 		var chest = chestCollision.userData;
 		var newGun = chest.open(this.marco.gun.bulletsCollisions);
 		this.marco.equipGun(newGun);
@@ -25390,6 +25293,7 @@ com_collision_platformer_CollisionEngine.colliders = [];
 com_framework_utils_Perlin.PERMUTATIONS = [151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208,89,18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];
 com_gEngine_GEngine.drawCount = 0;
 com_gEngine_GEngine.extraInfo = "";
+com_soundLib_SoundManager.soundMuted = false;
 com_soundLib_SoundManager.musicMuted = false;
 haxe_Unserializer.DEFAULT_RESOLVER = new haxe__$Unserializer_DefaultResolver();
 haxe_Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";

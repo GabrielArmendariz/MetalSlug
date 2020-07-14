@@ -16,7 +16,7 @@ import gameObjects.Enemy;
  * @author Joaquin
  */
 class RangedEnemy extends Enemy {
-	private static inline var SHOOTINGRADIO:Float = 200;
+	private static inline var SHOOTINGRADIO:Float = 250;
 	private static inline var MAX_SPEED:Float = 150;
     var gun:Gun;	
 	var shooting = false;

@@ -54,19 +54,29 @@ class GameState extends State {
 	var ammo:Text;
 	var ammoCount:Text;
 	var score:Int;
+	var map:String = "Mapa1_tmx";
+	var tileset:String = "marioPNG";
+	var tileSize:Int = 17;
+	var complete = false;
+	var nextMapName:String;
 
-	public function new(room:String, fromRoom:String = null) {
+	public function new(room:String = null, tileset:String = null, tileSize:Int = null, score:Int) {
 		super();
+		if(room != null){
+			map = room;
+			this.tileset = tileset;
+			this.tileSize = tileSize;
+			this.score = score;
+		}else{
+			this.score = 0;
+		}		
 	}
 
 	override function load(resources:Resources) {
 		screenWidth = GEngine.i.width;
         screenHeight = GEngine.i.height;
-		resources.add(new DataLoader("Mapa1_tmx"));
-		resources.add(new DataLoader("Mapa3_tmx"));
-		resources.add(new DataLoader(Assets.blobs.Mapa1_tmxName));
-		resources.add(new DataLoader(Assets.blobs.Mapa3_tmxName));
-		//resources.add(new SoundLoader("BGM"));
+		resources.add(new DataLoader(map));
+		resources.add(new SoundLoader("BGM",false));
 		resources.add(new SoundLoader("MarcoScream"));
 		resources.add(new SoundLoader("EnemyScream1"));
 		resources.add(new SoundLoader("EnemyScream2"));
@@ -84,8 +94,7 @@ class GameState extends State {
 		atlas.add(new ImageLoader("HUDPortrait"));
 		atlas.add(new ImageLoader("HUDGun"));
 		atlas.add(new ImageLoader("HUDMachineGun"));
-		atlas.add(new TilesheetLoader("marioPNG", 17, 17, 0));
-		atlas.add(new TilesheetLoader("Tileset", 16, 16, 0));
+		atlas.add(new TilesheetLoader(tileset, tileSize, tileSize, 0));
 		atlas.add(new FontLoader(Assets.fonts._04B_03__Name,30));
 		atlas.add(new FontLoader("Kenney_Pixel",18));				
 		resources.add(atlas);
@@ -94,6 +103,7 @@ class GameState extends State {
 	override function init() {
 		stageColor(0.5, 0.5, 0.5);
 		simulationLayer = new Layer();
+		GGD.simulationLayer = simulationLayer;
 		hudLayer = new StaticLayer();
 		stage.addChild(simulationLayer);
 		stage.addChild(hudLayer);		
@@ -104,20 +114,23 @@ class GameState extends State {
 		finishCollisions = new CollisionGroup();
 		doorCollisions = new CollisionGroup();
 		dialogCollision = new CollisionGroup();
-		GGD.simulationLayer=simulationLayer;
 		initHud();
-		score = 0;
-		worldMap = new Tilemap("Mapa1_tmx", 1);
+		worldMap = new Tilemap(map, 1);
 		worldMap.init(function(layerTilemap, tileLayer) {
 			if (!tileLayer.properties.exists("noCollision")) {
 				layerTilemap.createCollisions(tileLayer);
 			}
-			simulationLayer.addChild(layerTilemap.createDisplay(tileLayer, new Sprite("marioPNG")));
+			simulationLayer.addChild(layerTilemap.createDisplay(tileLayer, new Sprite(tileset)));
 		}, parseMapObjects);
 		stage.defaultCamera().limits(0, 0, worldMap.widthIntTiles * 16 * 1, worldMap.heightInTiles * 16 * 1);
 		stage.defaultCamera().scale = 2.1;
-		//SoundManager.playMusic("BGM",true);
-		//SoundManager.musicVolume(0.1);
+		SoundManager.playMusic("BGM",true);
+		SoundManager.musicVolume(0.1);
+	}
+
+	override function destroy(){
+		super.destroy();
+		touchJoystick.destroy();
 	}
 
 	function initHud(){
@@ -133,7 +146,7 @@ class GameState extends State {
 		scoreDisplay.x=650;
 		scoreDisplay.y=40;
 		hudLayer.addChild(scoreDisplay);
-		scoreDisplay.text="0";
+		scoreDisplay.text=""+score;
 		ammo= new Text(Assets.fonts._04B_03__Name);
 		ammo.x=125;
 		ammo.y=120;
@@ -163,7 +176,7 @@ class GameState extends State {
 			case OTRectangle: 
 				if(object.properties.exists("Type")){
 					switch (object.properties.get("Type")){
-						case "RangedEnemy" : 
+						/*case "RangedEnemy" : 
 							var enemy = new RangedEnemy(simulationLayer, enemyCollisions, enemyBullets, object.x, object.y);
 							addChild(enemy);
 						case "MeleeEnemy" :
@@ -173,7 +186,7 @@ class GameState extends State {
 							addChild(enemy);
 						case "Chest" :
 							var chest = new Chest(object.x,object.y,chestCollisions,simulationLayer);
-							addChild(chest);
+							addChild(chest);*/
 						case "Protagonist" :
 							marco = new Marco(object.x, object.y, simulationLayer);
 							addChild(marco);
@@ -205,6 +218,7 @@ class GameState extends State {
 					collision.x = object.x;
 					collision.y = object.y;
 					doorCollisions.add(collision);
+					nextMapName = object.properties.get("Door");
 				}
 				if(object.properties.exists("Text")){
 					var text=object.properties.get("Text");
@@ -218,6 +232,9 @@ class GameState extends State {
 
 	override function update(dt:Float) {
 		super.update(dt);	
+		if(marco.display.timeline.currentAnimation == "die_" && marco.display.timeline.isComplete()){
+			changeState(new EndgameScreen(""+score,"MissionFailed"));
+		}
 		CollisionEngine.collide(marco.collision,worldMap.collision);
 		CollisionEngine.collide(enemyCollisions,worldMap.collision);
 		CollisionEngine.overlap(marco.gun.bulletsCollisions, enemyCollisions, playerBulletVsEnemy);
@@ -226,7 +243,7 @@ class GameState extends State {
 		CollisionEngine.overlap(marco.collision, spikesCollisions, playerVsEnemy);
 		CollisionEngine.collide(marco.collision, chestCollisions, playerOpenChest);
 		CollisionEngine.overlap(marco.collision, finishCollisions, missionClear);
-		CollisionEngine.overlap(marco.collision, doorCollisions, nextMap);
+		CollisionEngine.collide(marco.collision, doorCollisions, nextMap);
 		CollisionEngine.overlap(dialogCollision,marco.collision,playerVsDialog);
 		stage.defaultCamera().setTarget(marco.collision.x, marco.collision.y);
 		if(marco.gun.ammo > -1){
@@ -272,17 +289,20 @@ class GameState extends State {
 	}
 
 	private function missionClear(playerCollision:ICollider, finishCollisions:ICollider) {
-		SoundManager.playMusic("MissionComplete",false);
-		SoundManager.musicVolume(0.1);
+		if(!complete){
+			SoundManager.playFx("MissionComplete").volume = 0.1;
+			complete = true;
+			changeState(new EndgameScreen(""+score,"missionComplete"));
+		}		
 	}
 
 	private function nextMap(playerCollision:ICollider, finishCollisions:ICollider) {
-		
+		var nextState = new GameState(nextMapName, "Tileset", 16,score);
+		changeState(nextState);
 	}
 
 	private function playerOpenChest(chestCollision:ICollider,playerCollisions:ICollider) {
-		SoundManager.playMusic("HeavyMachinegun",false);
-		SoundManager.musicVolume(0.1);
+		SoundManager.playFx("HeavyMachinegun").volume = 0.1;
 		var chest:Chest = cast chestCollision.userData;
 		var newGun = chest.open(marco.gun.bulletsCollisions);
 		marco.equipGun(newGun);
