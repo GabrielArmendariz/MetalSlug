@@ -9360,7 +9360,7 @@ gameObjects_Marco.prototype = $extend(com_framework_utils_Entity.prototype,{
 	}
 	,__class__: gameObjects_Marco
 });
-var gameObjects_MeleeEnemy = function(layer,collisions,x,y) {
+var gameObjects_MeleeEnemy = function(layer,collisions,x,y,maxX,minX) {
 	this.life = 2;
 	gameObjects_Enemy.call(this,layer,collisions,x,y,"MeleeEnemy");
 	this.display.scaleX = this.display.scaleY = 1.2;
@@ -9370,6 +9370,8 @@ var gameObjects_MeleeEnemy = function(layer,collisions,x,y) {
 	this.collision.velocityX = 225;
 	this.display.scaleX = -1;
 	this.display.timeline.frameRate = 0.1;
+	this.maxX = maxX;
+	this.minX = minX;
 };
 $hxClasses["gameObjects.MeleeEnemy"] = gameObjects_MeleeEnemy;
 gameObjects_MeleeEnemy.__name__ = "gameObjects.MeleeEnemy";
@@ -9384,11 +9386,11 @@ gameObjects_MeleeEnemy.prototype = $extend(gameObjects_Enemy.prototype,{
 		if(Math.abs(vecX) <= 25) {
 			this.attack();
 		}
-		if(this.collision.isTouching(1) || this.collision.x < 0) {
+		if(this.collision.x == this.minX || this.collision.x < 0) {
 			this.display.scaleX = -1;
 			this.collision.velocityX = 225;
 		}
-		if(this.collision.isTouching(2)) {
+		if(this.collision.x == this.maxX) {
 			this.display.scaleX = 1;
 			this.collision.velocityX = -225.;
 		}
@@ -24583,7 +24585,7 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	,spawnEnemies: function() {
 		var enemy = new gameObjects_RangedEnemy(this.simulationLayer,this.enemyCollisions,this.enemyBullets,500,(this.worldMap.heightInTiles - 8) * 16);
 		this.addChild(enemy);
-		var enemy2 = new gameObjects_MeleeEnemy(this.simulationLayer,this.enemyCollisions,900,(this.worldMap.heightInTiles - 8) * 16);
+		var enemy2 = new gameObjects_MeleeEnemy(this.simulationLayer,this.enemyCollisions,750,(this.worldMap.heightInTiles - 8) * 16,977,688);
 		this.addChild(enemy2);
 		var i = 0;
 		var gap = 0;

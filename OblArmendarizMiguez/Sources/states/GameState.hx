@@ -201,7 +201,7 @@ class GameState extends State {
 	private function spawnEnemies(){
 		var enemy = new RangedEnemy(simulationLayer, enemyCollisions, enemyBullets, 500, (worldMap.heightInTiles - 8) * 16);
 		addChild(enemy);
-		var enemy2 = new MeleeEnemy(simulationLayer, enemyCollisions, 900, (worldMap.heightInTiles - 8) * 16);
+		var enemy2 = new MeleeEnemy(simulationLayer, enemyCollisions, 750, (worldMap.heightInTiles - 8) * 16,977,688);
 		addChild(enemy2);
 		var i = 0;
 		var gap = 0;
@@ -219,5 +219,4 @@ class GameState extends State {
 		CollisionEngine.renderDebug(framebuffer,camera);
 	}
 	#end
-
 }
