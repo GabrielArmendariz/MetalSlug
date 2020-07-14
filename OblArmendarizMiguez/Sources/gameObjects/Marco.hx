@@ -86,7 +86,6 @@ class Marco extends Entity {
 			display.timeline.playAnimation("jump_");
 		}
 	}
-
 	
 	public function onButtonChange(id:Int, value:Float) {
 		if (id == XboxJoystick.LEFT_DPAD) {
@@ -127,8 +126,7 @@ class Marco extends Entity {
 	}
 
 	public function takeDamage(){
-		SoundManager.playMusic("MarcoScream",false);
-		SoundManager.musicVolume(0.1);
+		SoundManager.playFx("MarcoScream").volume = 0.1;
 		display.timeline.playAnimation("die_");
 		display.timeline.loop = false;
 		collision.width = 0;

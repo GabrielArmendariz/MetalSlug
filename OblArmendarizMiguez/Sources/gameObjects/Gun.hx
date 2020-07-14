@@ -26,8 +26,7 @@ class Gun extends Entity
 		if(bulletsShot < maxBulletsPerShot && ammo != 0){
 			var bullet:Bullet=cast recycle(Bullet);
 			bulletsShot++;
-			SoundManager.playMusic("GunShot",false);
-			SoundManager.musicVolume(0.1);
+			SoundManager.playFx("GunShot").volume = 0.1;
 			bullet.shoot(aX,aY,dirX,dirY,bulletsCollisions);
 			ammo--;
 		}		
