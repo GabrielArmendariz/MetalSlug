@@ -40,7 +40,6 @@ class GameState extends State {
 	var marco:Marco;
 	var simulationLayer:Layer;
 	var hudLayer:StaticLayer;
-	var touchJoystick:VirtualGamepad;
 	var enemyCollisions:CollisionGroup;
 	var enemyBullets:CollisionGroup;
 	var chestCollisions:CollisionGroup;
@@ -84,7 +83,7 @@ class GameState extends State {
 		resources.add(new SoundLoader("GunShot"));
 		resources.add(new SoundLoader("MachinegunShot"));
 		resources.add(new SoundLoader("HeavyMachinegun"));
-		var atlas = new JoinAtlas(2048, 2048);
+		var atlas = new JoinAtlas(4096, 4096);
 		atlas.add(new SparrowLoader("Protagonist", "Protagonist_xml"));
 		atlas.add(new SparrowLoader("ProtagonistShotgun", "ProtagonistShotgun_xml"));
 		atlas.add(new SparrowLoader("RangedEnemy", "RangedEnemy_xml"));
@@ -96,7 +95,9 @@ class GameState extends State {
 		atlas.add(new ImageLoader("HUDMachineGun"));
 		atlas.add(new TilesheetLoader(tileset, tileSize, tileSize, 0));
 		atlas.add(new FontLoader(Assets.fonts._04B_03__Name,30));
-		atlas.add(new FontLoader("Kenney_Pixel",18));				
+		atlas.add(new FontLoader("Kenney_Pixel",18));
+		atlas.add(new ImageLoader("Desert"));		
+		atlas.add(new ImageLoader("CloudAndMountain"));
 		resources.add(atlas);
 	}
 
@@ -128,10 +129,6 @@ class GameState extends State {
 		SoundManager.musicVolume(0.1);
 	}
 
-	override function destroy(){
-		super.destroy();
-		touchJoystick.destroy();
-	}
 
 	function initHud(){
 		portrait = new Sprite("HUDPortrait");
@@ -159,18 +156,6 @@ class GameState extends State {
 		ammoCount.text="INFINITE";
 	}
 
-	function createTouchJoystick() {		
-		touchJoystick = new VirtualGamepad();
-		touchJoystick.addKeyButton(XboxJoystick.LEFT_DPAD, KeyCode.Left);
-		touchJoystick.addKeyButton(XboxJoystick.RIGHT_DPAD, KeyCode.Right);
-		touchJoystick.addKeyButton(XboxJoystick.UP_DPAD, KeyCode.Up);
-		touchJoystick.addKeyButton(XboxJoystick.A, KeyCode.Space);
-		touchJoystick.addKeyButton(XboxJoystick.X, KeyCode.A);
-		touchJoystick.notify(marco.onAxisChange, marco.onButtonChange);
-		var gamepad = Input.i.getGamepad(0);
-		gamepad.notify(marco.onAxisChange, marco.onButtonChange);
-	}	
-
 	function parseMapObjects(layerTilemap:Tilemap, object:TmxObject) {
 		switch(object.objectType){
 			case OTRectangle: 
@@ -190,7 +175,7 @@ class GameState extends State {
 						case "Protagonist" :
 							marco = new Marco(object.x, object.y, simulationLayer);
 							addChild(marco);
-							createTouchJoystick();
+							// createTouchJoystick();
 							GGD.marco=marco;
 						default : 
 					}
@@ -226,6 +211,23 @@ class GameState extends State {
 					dialogCollision.add(dialog.collider);
 					addChild(dialog);
 				}
+			case OTTile(gid):
+				var background;
+				if(map == "Mapa1_tmx"){
+					background = "Desert";
+				}else{
+					background = "CloudAndMountain";
+				}
+				var sprite = new Sprite(background);
+				sprite.smooth = false;
+				sprite.x = object.x;
+				sprite.y = object.y - sprite.height();
+				sprite.pivotY=sprite.height();
+				sprite.scaleX = object.width/sprite.width();
+				sprite.scaleY = object.height/sprite.height();
+				sprite.rotation = object.rotation*Math.PI/180;
+				simulationLayer.addChild(sprite);
+					
 			default :
 		}
 	}
@@ -236,6 +238,7 @@ class GameState extends State {
 			changeState(new EndgameScreen(""+score,"MissionFailed"));
 		}
 		CollisionEngine.collide(marco.collision,worldMap.collision);
+		CollisionEngine.overlap(marco.gun.bulletsCollisions, worldMap.collision, bulletVsWall);
 		CollisionEngine.collide(enemyCollisions,worldMap.collision);
 		CollisionEngine.overlap(marco.gun.bulletsCollisions, enemyCollisions, playerBulletVsEnemy);
 		CollisionEngine.overlap(marco.collision, enemyBullets, playerVsEnemyBullet);
@@ -262,6 +265,11 @@ class GameState extends State {
 			weapon.y = 50;
 			ammoCount.text = "INFINITE";	
 		}
+	}
+
+	private function bulletVsWall(mapCollision:ICollider, bulletCollisions:ICollider){
+		var bullet:Bullet = cast bulletCollisions.userData;
+        bullet.die();
 	}
 
 	private function playerBulletVsEnemy(bulletCollisions:ICollider, enemyCollisions:ICollider){
@@ -302,7 +310,9 @@ class GameState extends State {
 	}
 
 	private function playerOpenChest(chestCollision:ICollider,playerCollisions:ICollider) {
-		SoundManager.playFx("HeavyMachinegun").volume = 0.1;
+		var sound = SoundManager.playFx("HeavyMachinegun");
+		sound.position = 1;
+		sound.volume = 0.1;
 		var chest:Chest = cast chestCollision.userData;
 		var newGun = chest.open(marco.gun.bulletsCollisions);
 		marco.equipGun(newGun);

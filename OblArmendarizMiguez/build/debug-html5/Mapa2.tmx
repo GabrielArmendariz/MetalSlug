@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="128" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="14" nextobjectid="33">
+<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="128" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="15" nextobjectid="35">
  <tileset firstgid="1" name="GreenTiles" tilewidth="16" tileheight="16" tilecount="60" columns="10">
-  <image source="Nueva carpeta/Foreground/Tileset.png" width="160" height="96"/>
+  <image source="Tileset.png" width="160" height="96"/>
  </tileset>
- <imagelayer id="7" name="Fondo2">
-  <image source="Nueva carpeta/BackgroundsFinal/CloudsBack.png" width="2048" height="1024"/>
- </imagelayer>
- <imagelayer id="6" name="Fondo1">
-  <image source="Nueva carpeta/BackgroundsFinal/CloudsFront.png" width="2048" height="1024"/>
- </imagelayer>
- <imagelayer id="8" name="Fondo3">
-  <image source="Nueva carpeta/BackgroundsFinal/BGBack.png" width="2048" height="1024"/>
- </imagelayer>
- <imagelayer id="9" name="Fondo4">
-  <image source="Nueva carpeta/BackgroundsFinal/BGFront.png" width="2048" height="1024"/>
- </imagelayer>
+ <tileset firstgid="61" name="CloudAndMountain" tilewidth="2048" tileheight="1024" tilecount="1" columns="1">
+  <image source="CloudAndMountain.png" width="2048" height="1024"/>
+ </tileset>
+ <objectgroup id="14" name="Background">
+  <properties>
+   <property name="Background" value="CloudAndMountain"/>
+  </properties>
+  <object id="34" gid="61" x="0" y="1024" width="2048" height="1024"/>
+ </objectgroup>
  <layer id="10" name="BackGround" width="128" height="64">
   <properties>
    <property name="noCollision" value=""/>

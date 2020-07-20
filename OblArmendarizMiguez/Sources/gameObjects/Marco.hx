@@ -9,6 +9,8 @@ import com.collision.platformer.CollisionBox;
 import com.gEngine.display.Sprite;
 import com.framework.utils.Entity;
 import kha.math.FastVector2;
+import kha.input.KeyCode;
+import com.framework.utils.Input;
 
 class Marco extends Entity {
 	public var display:Sprite;
@@ -31,6 +33,27 @@ class Marco extends Entity {
 		if(display.timeline.currentAnimation == "die_"){
 			return;
 		}		
+		collision.velocityX =0;
+		if(Input.i.isKeyCodeDown(KeyCode.Left) && collision.x > 0){
+			collision.velocityX = -maxSpeed;
+			display.scaleX = -Math.abs(display.scaleX);
+		}
+		if(Input.i.isKeyCodeDown(KeyCode.Right)){
+			collision.velocityX = maxSpeed;
+			display.scaleX = Math.abs(display.scaleX);
+		}
+		if(Input.i.isKeyCodePressed(KeyCode.Space)){
+			if (collision.isTouching(Sides.BOTTOM) || jump < 2) {
+				collision.velocityY = -600;
+				jump++;
+			}
+		}
+        if(Input.i.isKeyCodeDown(KeyCode.A)){
+            if(!shooting){
+				this.shoot = true;
+			}
+		}
+
 		if(shoot){
 			gun.shoot(collision.x, collision.y + 7, getOrientation(), 0);
 		}
@@ -38,6 +61,9 @@ class Marco extends Entity {
 			collision.velocityX = 0;
 			collision.x = 0;
 		}
+		
+		
+		
 		super.update(dt);
 		collision.update(dt);
 	}
@@ -87,46 +113,11 @@ class Marco extends Entity {
 		}
 	}
 	
-	public function onButtonChange(id:Int, value:Float) {
-		if (id == XboxJoystick.LEFT_DPAD) {
-			if (value == 1) {
-				collision.velocityX = -maxSpeed;
-				display.scaleX = -Math.abs(display.scaleX);
-			} else {
-				if (collision.velocityX < 0) {
-					collision.velocityX = 0;
-				}
-			}
-		}
-		if (id == XboxJoystick.RIGHT_DPAD) {
-			if (value == 1) {
-				collision.velocityX = maxSpeed;
-				display.scaleX = Math.abs(display.scaleX);
-			} else {
-				if (collision.velocityX > 0) {
-					collision.velocityX = 0;
-				}
-			}
-		}
-		if (id == XboxJoystick.A) {
-			if (value == 1) {
-				if (collision.isTouching(Sides.BOTTOM) || jump < 2) {
-					collision.velocityY = -600;
-					jump++;
-				}
-			}
-		}
-		if (id == XboxJoystick.X) {
-			if (value == 1) {
-				if(!shooting){
-					this.shoot = true;
-				}
-			}
-		}
-	}
 
 	public function takeDamage(){
-		SoundManager.playFx("MarcoScream").volume = 0.1;
+		var sound = SoundManager.playFx("MarcoScream");
+		sound.volume = 0.3;
+		sound.position = 1;
 		display.timeline.playAnimation("die_");
 		display.timeline.loop = false;
 		collision.width = 0;
@@ -175,13 +166,6 @@ class Marco extends Entity {
 		return 1;
 	}
 
-	// 	var s = Math.abs(collision.velocityX / collision.maxVelocityX);
-	// 	display.timeline.frameRate = (1 / 30) * s + (1 - s) * (1 / 10);	
-	// }
 
-	public function onAxisChange(id:Int, value:Float) {}
 
-	// inline function isWallGrabing():Bool {
-	// 	return !collision.isTouching(Sides.BOTTOM) && (collision.isTouching(Sides.LEFT) || collision.isTouching(Sides.RIGHT));
-	// }
 }

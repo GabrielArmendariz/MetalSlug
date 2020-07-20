@@ -37,7 +37,9 @@ class Enemy extends Entity {
 	}
 
 	public function takeDamage(){
-		SoundManager.playFx("EnemyScream1").volume = 0.1;
+		var sound = SoundManager.playFx("EnemyScream1");
+		sound.volume = 0.1;
+		sound.position = 0.3;
         display.timeline.playAnimation("die_");
 		display.timeline.loop = false;
 		collisionGroup.remove(collision);		

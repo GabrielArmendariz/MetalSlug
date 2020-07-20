@@ -6,6 +6,7 @@ import com.gEngine.helper.RectangleDisplay;
 import com.collision.platformer.CollisionBox;
 import com.framework.utils.Entity;
 import com.gEngine.display.Sprite;
+import com.gEngine.GEngine;
 
 /**
  * ...
@@ -17,6 +18,8 @@ class Bullet extends Entity
 	var display:Sprite;
 	var lifeTime:Float = 0;
 	var totalLifeTime:Float = 3;
+	var originX:Float;
+	var displayOffSet = 300;
 
 	public function new() 
 	{
@@ -42,6 +45,15 @@ class Bullet extends Entity
 		collision.update(dt);
 		display.x=collision.x;
 		display.y=collision.y;
+		var traveledDistance = display.x - originX;
+		if(originX < displayOffSet){
+			if(traveledDistance > displayOffSet*2 - originX){
+				die();
+			}
+		}else if(traveledDistance > displayOffSet){
+			die();
+		}
+
 		
 		super.update(dt);
 	}
@@ -55,5 +67,6 @@ class Bullet extends Entity
 		collision.velocityY = 1000 * dirY;
 		bulletsCollision.add(collision);
 		GGD.simulationLayer.addChild(display);
+		originX = x;
 	}
 }

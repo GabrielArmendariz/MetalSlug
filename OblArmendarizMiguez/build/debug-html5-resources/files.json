@@ -45,16 +45,28 @@
 			"type": "blob"
 		},
 		{
-			"name": "DesiertoReLoco",
+			"name": "CloudAndMountain",
 			"files": [
-				"DesiertoReLoco.jpg"
+				"CloudAndMountain.png"
 			],
 			"file_sizes": [
-				123477
+				22223
 			],
 			"type": "image",
 			"original_width": 2048,
 			"original_height": 1024
+		},
+		{
+			"name": "Desert",
+			"files": [
+				"Desert.png"
+			],
+			"file_sizes": [
+				892525
+			],
+			"type": "image",
+			"original_width": 2048,
+			"original_height": 500
 		},
 		{
 			"name": "EnemyScream1",
@@ -188,7 +200,7 @@
 				"Mapa1.tmx"
 			],
 			"file_sizes": [
-				39140
+				39416
 			],
 			"type": "blob"
 		},
@@ -198,7 +210,7 @@
 				"Mapa2.tmx"
 			],
 			"file_sizes": [
-				90103
+				89916
 			],
 			"type": "blob"
 		},
@@ -216,6 +228,16 @@
 			"name": "MarcoScream",
 			"files": [
 				"MarcoScream.ogg"
+			],
+			"file_sizes": [
+				35058
+			],
+			"type": "sound"
+		},
+		{
+			"name": "MarcoScream_2",
+			"files": [
+				"MarcoScream 2.ogg"
 			],
 			"file_sizes": [
 				13429
