@@ -1,0 +1,20 @@
+#version 100
+
+uniform mediump mat4 projectionMatrix;
+
+attribute mediump vec3 vertexPosition;
+varying mediump vec2 texCoord;
+attribute mediump vec2 texPosition;
+varying mediump vec4 _colorMul;
+attribute mediump vec4 colorMul;
+varying mediump vec4 _colorAdd;
+attribute mediump vec4 colorAdd;
+
+void main()
+{
+    gl_Position = projectionMatrix * vec4(vertexPosition, 1.0);
+    texCoord = texPosition;
+    _colorMul = colorMul;
+    _colorAdd = colorAdd;
+}
+

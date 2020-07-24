@@ -1,0 +1,18 @@
+#version 100
+
+uniform mediump mat4 projectionMatrix;
+
+attribute mediump vec3 vertexPosition;
+varying mediump vec2 texCoord;
+attribute mediump vec2 texPosition;
+varying mediump vec2 texCoordMask;
+
+void main()
+{
+    mediump vec4 pos = projectionMatrix * vec4(vertexPosition, 1.0);
+    texCoord = texPosition;
+    mediump vec2 v_texCoordMask = texPosition;
+    texCoordMask = v_texCoordMask;
+    gl_Position = pos;
+}
+
