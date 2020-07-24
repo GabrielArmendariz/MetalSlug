@@ -892,63 +892,11 @@ com_collision_platformer_CollisionBox.prototype = $extend(com_collision_platform
 			return false;
 		}
 	}
-	,debugDraw: function(canvas) {
-		var g2 = canvas.get_g2();
-		g2.drawLine(this.x,this.y,this.x + this.width,this.y);
-		g2.drawLine(this.x + this.width,this.y,this.x + this.width,this.y + this.height);
-		g2.drawLine(this.x + this.width,this.y + this.height,this.x,this.y + this.height);
-		g2.drawLine(this.x,this.y + this.height,this.x,this.y);
-	}
 	,__class__: com_collision_platformer_CollisionBox
 });
 var com_collision_platformer_CollisionEngine = function() { };
 $hxClasses["com.collision.platformer.CollisionEngine"] = com_collision_platformer_CollisionEngine;
 com_collision_platformer_CollisionEngine.__name__ = "com.collision.platformer.CollisionEngine";
-com_collision_platformer_CollisionEngine.renderDebug = function(canvas,camera) {
-	canvas.get_g2().begin(false);
-	canvas.get_g2().set_color(-256);
-	var cV = camera.view;
-	var scaleX = canvas.get_width() / camera.width;
-	var scaleY = canvas.get_height() / camera.height;
-	var _this = canvas.get_g2();
-	var _this__10 = 0;
-	var _this__20 = 0;
-	var _this__01 = 0;
-	var _this__21 = 0;
-	var _this__02 = 0;
-	var _this__12 = 0;
-	var _this__22 = 1;
-	var _00 = cV._00;
-	var _10 = cV._10;
-	var _20 = cV._30 + camera.width * 0.5;
-	var _01 = cV._01;
-	var _11 = cV._11;
-	var _21 = cV._31 + camera.height * 0.5;
-	var _02 = cV._03;
-	var _12 = cV._13;
-	var _22 = cV._33;
-	var transformation = new kha_math_FastMatrix3(scaleX * _00 + _this__10 * _01 + _this__20 * _02,scaleX * _10 + _this__10 * _11 + _this__20 * _12,scaleX * _20 + _this__10 * _21 + _this__20 * _22,_this__01 * _00 + scaleY * _01 + _this__21 * _02,_this__01 * _10 + scaleY * _11 + _this__21 * _12,_this__01 * _20 + scaleY * _21 + _this__21 * _22,_this__02 * _00 + _this__12 * _01 + _this__22 * _02,_this__02 * _10 + _this__12 * _11 + _this__22 * _12,_this__02 * _20 + _this__12 * _21 + _this__22 * _22);
-	_this.setTransformation(transformation);
-	var _this1 = _this.transformations[_this.transformationIndex];
-	_this1._00 = transformation._00;
-	_this1._10 = transformation._10;
-	_this1._20 = transformation._20;
-	_this1._01 = transformation._01;
-	_this1._11 = transformation._11;
-	_this1._21 = transformation._21;
-	_this1._02 = transformation._02;
-	_this1._12 = transformation._12;
-	_this1._22 = transformation._22;
-	var _g = 0;
-	var _g1 = com_collision_platformer_CollisionEngine.colliders;
-	while(_g < _g1.length) {
-		var collider = _g1[_g];
-		++_g;
-		collider.debugDraw(canvas);
-	}
-	canvas.get_g2().end();
-	com_collision_platformer_CollisionEngine.colliders.splice(0,com_collision_platformer_CollisionEngine.colliders.length);
-};
 com_collision_platformer_CollisionEngine.collide = function(A,B,aCallBack) {
 	com_collision_platformer_CollisionEngine.colliders.push(A);
 	com_collision_platformer_CollisionEngine.colliders.push(B);
@@ -1035,15 +983,6 @@ com_collision_platformer_CollisionGroup.prototype = {
 	}
 	,collisionType: function() {
 		return com_collision_platformer_CollisionType.Group;
-	}
-	,debugDraw: function(canvas) {
-		var _g = 0;
-		var _g1 = this.colliders;
-		while(_g < _g1.length) {
-			var col = _g1[_g];
-			++_g;
-			col.debugDraw(canvas);
-		}
 	}
 	,__class__: com_collision_platformer_CollisionGroup
 };
@@ -1158,8 +1097,6 @@ com_collision_platformer_CollisionTileMap.prototype = {
 	}
 	,collisionType: function() {
 		return com_collision_platformer_CollisionType.TileMap;
-	}
-	,debugDraw: function(canvas) {
 	}
 	,__class__: com_collision_platformer_CollisionTileMap
 };
@@ -19393,11 +19330,6 @@ kha_graphics2_Graphics.prototype = {
 	}
 	,drawString: function(text,x,y) {
 	}
-	,drawLine: function(x1,y1,x2,y2,strength) {
-		if(strength == null) {
-			strength = 1.0;
-		}
-	}
 	,fillTriangle: function(x1,y1,x2,y2,x3,y3) {
 	}
 	,set_imageScaleQuality: function(value) {
@@ -21274,9 +21206,6 @@ kha_graphics4_CubeMap.prototype = {
 	,get_height: function() {
 		return this.myHeight;
 	}
-	,get_g2: function() {
-		return null;
-	}
 	,get_g4: function() {
 		if(this.graphics4 == null) {
 			this.graphics4 = new kha_js_graphics4_Graphics(this);
@@ -22332,142 +22261,6 @@ kha_graphics4_Graphics2.prototype = $extend(kha_graphics2_Graphics.prototype,{
 	}
 	,set_fontSize: function(value) {
 		return kha_graphics2_Graphics.prototype.set_fontSize.call(this,this.textPainter.fontSize = value);
-	}
-	,drawLine: function(x1,y1,x2,y2,strength) {
-		if(strength == null) {
-			strength = 1.0;
-		}
-		this.imagePainter.end();
-		this.textPainter.end();
-		var vec_x = 0;
-		var vec_y = 0;
-		if(y2 == y1) {
-			var v_x = 0;
-			var v_y = -1;
-			vec_x = v_x;
-			vec_y = v_y;
-		} else {
-			var y = -(x2 - x1) / (y2 - y1);
-			if(y == null) {
-				y = 0;
-			}
-			var v_x1 = 1;
-			var v_y1 = y;
-			vec_x = v_x1;
-			vec_y = v_y1;
-		}
-		var currentLength = Math.sqrt(vec_x * vec_x + vec_y * vec_y);
-		if(currentLength != 0) {
-			var mul = strength / currentLength;
-			vec_x *= mul;
-			vec_y *= mul;
-		}
-		var x = x1 + 0.5 * vec_x;
-		var y3 = y1 + 0.5 * vec_y;
-		if(y3 == null) {
-			y3 = 0;
-		}
-		if(x == null) {
-			x = 0;
-		}
-		var p1_x = x;
-		var p1_y = y3;
-		var x3 = x2 + 0.5 * vec_x;
-		var y4 = y2 + 0.5 * vec_y;
-		if(y4 == null) {
-			y4 = 0;
-		}
-		if(x3 == null) {
-			x3 = 0;
-		}
-		var p2_x = x3;
-		var p2_y = y4;
-		var x4 = p1_x - vec_x;
-		var y5 = p1_y - vec_y;
-		if(y5 == null) {
-			y5 = 0;
-		}
-		if(x4 == null) {
-			x4 = 0;
-		}
-		var p3_x = x4;
-		var p3_y = y5;
-		var x5 = p2_x - vec_x;
-		var y6 = p2_y - vec_y;
-		if(y6 == null) {
-			y6 = 0;
-		}
-		if(x5 == null) {
-			x5 = 0;
-		}
-		var p4_x = x5;
-		var p4_y = y6;
-		var _this = this.transformations[this.transformationIndex];
-		var w = _this._02 * p1_x + _this._12 * p1_y + _this._22;
-		var x6 = (_this._00 * p1_x + _this._10 * p1_y + _this._20) / w;
-		var y7 = (_this._01 * p1_x + _this._11 * p1_y + _this._21) / w;
-		var x7 = x6;
-		var y8 = y7;
-		if(y7 == null) {
-			y8 = 0;
-		}
-		if(x6 == null) {
-			x7 = 0;
-		}
-		var v_x2 = x7;
-		var v_y2 = y8;
-		p1_x = v_x2;
-		p1_y = v_y2;
-		var _this1 = this.transformations[this.transformationIndex];
-		var w1 = _this1._02 * p2_x + _this1._12 * p2_y + _this1._22;
-		var x8 = (_this1._00 * p2_x + _this1._10 * p2_y + _this1._20) / w1;
-		var y9 = (_this1._01 * p2_x + _this1._11 * p2_y + _this1._21) / w1;
-		var x9 = x8;
-		var y10 = y9;
-		if(y9 == null) {
-			y10 = 0;
-		}
-		if(x8 == null) {
-			x9 = 0;
-		}
-		var v_x3 = x9;
-		var v_y3 = y10;
-		p2_x = v_x3;
-		p2_y = v_y3;
-		var _this2 = this.transformations[this.transformationIndex];
-		var w2 = _this2._02 * p3_x + _this2._12 * p3_y + _this2._22;
-		var x10 = (_this2._00 * p3_x + _this2._10 * p3_y + _this2._20) / w2;
-		var y11 = (_this2._01 * p3_x + _this2._11 * p3_y + _this2._21) / w2;
-		var x11 = x10;
-		var y12 = y11;
-		if(y11 == null) {
-			y12 = 0;
-		}
-		if(x10 == null) {
-			x11 = 0;
-		}
-		var v_x4 = x11;
-		var v_y4 = y12;
-		p3_x = v_x4;
-		p3_y = v_y4;
-		var _this3 = this.transformations[this.transformationIndex];
-		var w3 = _this3._02 * p4_x + _this3._12 * p4_y + _this3._22;
-		var x12 = (_this3._00 * p4_x + _this3._10 * p4_y + _this3._20) / w3;
-		var y13 = (_this3._01 * p4_x + _this3._11 * p4_y + _this3._21) / w3;
-		var x13 = x12;
-		var y14 = y13;
-		if(y13 == null) {
-			y14 = 0;
-		}
-		if(x12 == null) {
-			x13 = 0;
-		}
-		var v_x5 = x13;
-		var v_y5 = y14;
-		p4_x = v_x5;
-		p4_y = v_y5;
-		this.coloredPainter.fillTriangle(this.get_opacity(),this.get_color(),p1_x,p1_y,p2_x,p2_y,p3_x,p3_y);
-		this.coloredPainter.fillTriangle(this.get_opacity(),this.get_color(),p3_x,p3_y,p2_x,p2_y,p4_x,p4_y);
 	}
 	,fillTriangle: function(x1,y1,x2,y2,x3,y3) {
 		this.imagePainter.end();
@@ -24095,19 +23888,6 @@ kha_js_CanvasGraphics.prototype = $extend(kha_graphics2_Graphics.prototype,{
 		this.webfont = js_Boot.__cast(font , kha_js_Font);
 		return this.webfont;
 	}
-	,drawLine: function(x1,y1,x2,y2,strength) {
-		if(strength == null) {
-			strength = 1.0;
-		}
-		this.canvas.beginPath();
-		var oldWith = this.canvas.lineWidth;
-		this.canvas.lineWidth = Math.round(strength);
-		this.canvas.moveTo(x1,y1);
-		this.canvas.lineTo(x2,y2);
-		this.canvas.moveTo(0,0);
-		this.canvas.stroke();
-		this.canvas.lineWidth = oldWith;
-	}
 	,fillTriangle: function(x1,y1,x2,y2,x3,y3) {
 		this.canvas.beginPath();
 		this.canvas.moveTo(x1,y1);
@@ -25307,11 +25087,6 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		var chest = chestCollision.userData;
 		var newGun = chest.open(this.marco.gun.bulletsCollisions);
 		this.marco.equipGun(newGun);
-	}
-	,draw: function(framebuffer) {
-		com_framework_utils_State.prototype.draw.call(this,framebuffer);
-		var camera = this.stage.cameras[0];
-		com_collision_platformer_CollisionEngine.renderDebug(framebuffer,camera);
 	}
 	,__class__: states_GameState
 });
